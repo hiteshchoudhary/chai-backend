@@ -24,21 +24,24 @@ const registerUser = asyncHandler(async (req, res) => {
       (field) => field?.trim() === "" || field?.trim() === undefined
     )
   ) {
+    removeFile(req);
     throw new ApiError(400, "Please fill all the fields");
   }
 
   //validation for email
   const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!regexEmail.test(String(email).toLowerCase())) {
+    removeFile(req);
     throw new ApiError(400, "Please enter a valid email");
   }
 
   // validation for userName
   const regexUserName = /^[a-z0-9_]+$/;
   if (!regexUserName.test(userName)) {
+    removeFile(req);
     throw new ApiError(
       400,
-      "Username can only contain letters and numbers and "
+      "Username can only contain letters and numbers and  underscores"
     );
   }
 
@@ -46,6 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const regexPassword =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,20})/;
   if (!regexPassword.test(password)) {
+    removeFile(req);
     throw new ApiError(
       400,
       "Password must contain at least one lowercase letter, one uppercase letter, one number and one special character"
@@ -58,6 +62,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (existUser) {
+    removeFile(req);
     throw new ApiError(409, "User  already exists");
   }
 
@@ -73,14 +78,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   if (!avatarLocalPath) {
+    removeFile(req);
     throw new ApiError(400, "Please upload an avatar");
   }
 
   // uploading image to cloud storage
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  const avatar = await uploadfile(avatarLocalPath);
+  const coverImage = await uploadfile(coverImageLocalPath);
 
   if (!avatar) {
+    removeFile(req);
     throw new ApiError(400, "some error in image, please try again");
   }
 
@@ -100,6 +107,7 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
+    removeFile(req);
     throw new ApiError(500, "Something went wrong while registering user");
   }
 
