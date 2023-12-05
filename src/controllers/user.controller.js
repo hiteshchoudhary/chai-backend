@@ -3,6 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import { User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import fs from "fs";
 
 const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
@@ -44,7 +45,9 @@ const registerUser = asyncHandler( async (req, res) => {
     
 
     if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is required")
+        fs.unlinkSync(coverImageLocalPath) // Removes the coverImage from local server when avatar not found
+        throw new ApiError(400, "Avatar file is required")  
+        
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
