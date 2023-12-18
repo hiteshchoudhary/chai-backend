@@ -158,6 +158,8 @@ const loginUser = asyncHandler(async (req, res) =>{
 })
 
 const logoutUser = asyncHandler(async(req, res) => {
+
+    // instead of undefined we should use the null
     await User.findByIdAndUpdate(
         req.user._id,
         {
