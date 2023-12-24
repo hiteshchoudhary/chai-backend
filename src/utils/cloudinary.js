@@ -28,14 +28,13 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 
 const destroyOnCloudinary = async (remotePath) => {
+    // Call code ---  await destroyOnCloudinary(req.user.avatar)
     try {
         if (!remotePath) return null;
         const regex = /[\w\.\$]+(?=.png|.jpg|.gif)/;
         let matches;
-        // Alternative syntax using RegExp constructor
-        // const regex = new RegExp('[\\w\\.\\$]+(?=.png|.jpg|.gif)', '')
+
         if ((matches = regex.exec(remotePath)) !== null) {
-            // The result can be accessed through the `m`-variable.
             // destroy the file on Cloudinary
             await cloudinary.uploader.destroy(matches[0])
             .then(result => console.log(result));
@@ -47,3 +46,4 @@ const destroyOnCloudinary = async (remotePath) => {
 }
 
 export {uploadOnCloudinary, destroyOnCloudinary}
+
