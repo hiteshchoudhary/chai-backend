@@ -5,6 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
+import { video } from "../models/video.model.js";
 
 
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -479,6 +480,41 @@ const getWatchHistory = asyncHandler(async(req, res) => {
         )
     )
 })
+
+const uploadVideo = asyncHandler(async (req, res) => {
+    const { title, description } = req.body;
+  
+    if (!title || !description) {
+      throw new ApiError(400, "Please fill in all fields");
+    }
+  
+    const videoFileLocalPath = req.files?.video[0]?.path;
+    const thumbnailFileLocalPath = req.files?.thumbnail[0]?.path;
+  
+    if (!videoFileLocalPath || !thumbnailFileLocalPath) {
+      throw new ApiError(400, "Please upload video or thumbnail");
+    }
+  
+    const videoFile = await uploadOnCloudinary(videoFileLocalPath);
+    const thumbnailFile = await uploadOnCloudinary(thumbnailFileLocalPath);
+  
+    if (!videoFile.url || !thumbnailFile.url) {
+      throw new ApiError(400, "Error while uploading video");
+    }
+  
+    const videoUploaded = await video.create({
+      title,
+      description,
+      videoFile: videoFile.url,
+      thumbFile: thumbnailFile.url,
+      duration: videoFile.duration,
+      owner: req.user._id,
+    });
+  
+    return res
+      .status(200)
+      .json(new ApiResponse(200, videoUploaded, "Video uploaded successfully"));
+  });
 
 
 export {
