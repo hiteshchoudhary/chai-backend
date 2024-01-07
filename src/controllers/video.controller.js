@@ -20,6 +20,17 @@ const publishAVideo = asyncHandler(async (req, res) => {
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: get video by id
+    const video = await Video.findById({videoId})
+
+    if(!video){
+        throw new ApiError(500, "Please provide a valid video id")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, video, "Video Id fetched successfully")
+    )
 })
 
 const updateVideo = asyncHandler(async (req, res) => {
