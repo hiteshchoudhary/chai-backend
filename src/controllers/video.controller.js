@@ -52,9 +52,36 @@ const publishAVideo = asyncHandler(async (req, res) => {
         throw ApiError(409,"title and description must be requried")
     }
 
-    
+    const videoLocalPath=req.files?.videoFile[0]?.path
+    const  thumbnailLocalPath=req.files?.thumbnail[0]?.path
+
+    if(!videoLocalPath || !thumbnailLocalPath){
+        throw ApiError(409,"videoFile and thumbnail is requried")
+    }
+
+    const videoFile= await uploadOnCloudinary(videoLocalPath)
+    const thumbnail= await uploadOnCloudinary(thumbnailLocalPath)
 
 
+  if(!video || !thumbnail){
+        throw ApiError(409,"videoFile and thumbnail is requried")
+    }
+    const video=await Video.create(
+            {
+
+                videoFile:videoFile.url,
+                thumbnail:thumbnail.url,
+                title,
+                description,
+                owner:req.user._id
+            }
+
+
+        )
+
+return res.status(201).json(
+    ApiResponse(200,video,"sucessfully video is upload in database")
+    )
 
 })
 
