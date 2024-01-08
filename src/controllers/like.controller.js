@@ -102,17 +102,205 @@ const getLikedVideos = asyncHandler(async (req, res) => {
         {
             $match:{
                 $and:[
-                    {$},
-                    {}
+                    {video: { $exists: true }},
+                    {likedBy:new mongoose.Types.ObjectId(req.user._id)}
                 ]
+            }
+        },
+        {
+            $lookup:{
+                from:"videos",
+                localField:"video",
+                foreignField:"_id",
+                as:"video",
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        username:1,
+                                        fullName:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields:{
+                            owner:{$first:"$owner"}
+                        }
+                    }
+                ] 
+            }
+        },
+        {
+            $addFields:{
+                video:{$first:"$video"}
+            }
+        },
+        {
+            $project:{
+                video:1
             }
         }
     ])
+
+    if (!likedVideos) {
+            throw new ApiError(500, `something went wrong while get liked videos`);
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,likedVideos,"get all liked video successfully")
+    )
 })
+
+
+const getLikedComments = asyncHandler(async (req, res) => {
+    //TODO: get all liked videos
+    const likedComments = await Like.aggregate([
+        {
+            $match:{
+                $and:[
+                    {comment: { $exists: true }},
+                    {likedBy:new mongoose.Types.ObjectId(req.user._id)}
+                ]
+            }
+        },
+        {
+            $lookup:{
+                from:"comments",
+                localField:"comment",
+                foreignField:"_id",
+                as:"comment",
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        username:1,
+                                        fullName:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields:{
+                            owner:{$first:"$owner"}
+                        }
+                    }
+                ] 
+            }
+        },
+        {
+            $addFields:{
+                comment:{$first:"$comment"}
+            }
+        },
+        {
+            $project:{
+                comment:1
+            }
+        }
+    ])
+
+    if (!likedComments) {
+            throw new ApiError(500, `something went wrong while get liked comments`);
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,likedComments,"get all liked comments successfully")
+    )
+})
+
+const getLikedTweets = asyncHandler(async (req, res) => {
+    //TODO: get all liked videos
+    const likedTweets = await Like.aggregate([
+        {
+            $match:{
+                $and:[
+                    {tweet: { $exists: true }},
+                    {likedBy:new mongoose.Types.ObjectId(req.user._id)}
+                ]
+            }
+        },
+        {
+            $lookup:{
+                from:"tweets",
+                localField:"tweet",
+                foreignField:"_id",
+                as:"tweet",
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"_id",
+                            as:"owner",
+                            pipeline:[
+                                {
+                                    $project:{
+                                        username:1,
+                                        fullName:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields:{
+                            owner:{$first:"$owner"}
+                        }
+                    }
+                ] 
+            }
+        },
+        {
+            $addFields:{
+                tweet:{$first:"$tweet"}
+            }
+        },
+        {
+            $project:{
+                tweet:1
+            }
+        }
+    ])
+
+    if (!likedTweets) {
+            throw new ApiError(500, `something went wrong while get liked tweets`);
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,likedTweets,"get all liked tweets successfully")
+    )
+})
+
 
 export {
     toggleCommentLike,
     toggleTweetLike,
     toggleVideoLike,
-    getLikedVideos
+    getLikedVideos,
+    getLikedComments,
+    getLikedTweets
 }

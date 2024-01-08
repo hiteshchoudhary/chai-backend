@@ -88,6 +88,14 @@ const getVideoById = asyncHandler(async (req, res) => {
         },
         {
             $lookup:{
+                from:"likes",
+                localField:"_id",
+                foreignField:"video",
+                as:"totalLikes"
+            }
+        },
+        {
+            $lookup:{
                 from:"users",
                 localField:"owner",
                 foreignField:"_id",
@@ -128,41 +136,25 @@ const getVideoById = asyncHandler(async (req, res) => {
             }
         },
         {
-            $lookup:{
-                from:"comments",
-                localField:"_id",
-                foreignField:"video",
-                as:"comments",
-                pipeline:[
-                    {
-                        $lookup:{
-                            from:"users",
-                            localField:"owner",
-                            foreignField:"_id",
-                            as:"owner"
-                        }
-                    },{
-                        $addFields:{
-                            owner:{$first:"$owner"}
-                        }
-                    },{
-                        $project:{
-                            fullName: 1,
-                            username: 1,
-                            avatar: 1,
-                        }
-                    }
-                ]
-            }
-        },
-        {
             $addFields:{
                 owner : {
                     $first :"$owner"
                 },
-                totalComments:{
-                    $size:"$comments"
+                totalLikes:{
+                    $size:"$totalLikes"
+                },
+                isLiked:{
+                    $cond: {
+                        if: {$in: [req.user?._id, "$totalLikes.likedBy"]},
+                        then: true,
+                        else: false
+                    }
                 }
+            }
+        },
+        {
+            $project:{
+                totalLikes:0
             }
         }
     ])
@@ -288,11 +280,37 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     )
 })
 
+const updateViewCount = asyncHandler(async(req,res)=>{
+    const {videoId} = req.params;
+
+    if (!videoId) {
+        throw new ApiError(400,"videoId is required");
+    }
+
+    const video = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $inc:{views:1}
+        }
+    )
+
+    if (!video) {
+        throw new ApiError(500,"update view Count faild");
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,{},"view count updated successfully")
+    )
+})
+
 export {
     getAllVideos,
     publishAVideo,
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
+    togglePublishStatus,
+    updateViewCount
 }
