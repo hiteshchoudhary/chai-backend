@@ -10,6 +10,12 @@ const createTweet = asyncHandler(async (req, res) => {
     try {
         const { content, owner } = req.body;
 
+        if (!isValidObjectId(owner)) {
+            return res.status(400).json({
+                error: 'Invalid user ID',
+            });
+        }
+
         // Check if the user (owner) exists
         const user = await User.findById(owner);
         if (!user) {
@@ -38,6 +44,12 @@ const getUserTweets = asyncHandler(async (req, res) => {
     try {
         const userId = req.params.userId; 
 
+        if (!isValidObjectId(userId)) {
+            return res.status(400).json({
+                error: 'Invalid user ID',
+            });
+        }
+
         // Find tweets by the specified user ID
         const tweets = await Tweet.find({ owner: userId })
             .populate('owner', 'username');  
@@ -58,6 +70,12 @@ const updateTweet = asyncHandler(async (req, res) => {
 
     try{
         const {tweetId,updatedContent} = req.body
+
+        if (!isValidObjectId(tweetId)) {
+            return res.status(400).json({
+                error: 'Invalid Tweet ID',
+            });
+        }
 
         const tweet = await Tweet.findById(tweetId)
 
@@ -89,6 +107,12 @@ const deleteTweet = asyncHandler(async (req, res) => {
     try {
         const { tweetId } = req.body;
         const userId = req.user.id;
+
+        if (!isValidObjectId(tweetId)) {
+            return res.status(400).json({
+                error: 'Invalid Tweet ID',
+            });
+        }
  
         const tweet = await Tweet.findById(tweetId);
 
