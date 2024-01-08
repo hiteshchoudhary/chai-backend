@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { User} from "../models/user.model.js"
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import {uploadOnCloudinary,deleteFromCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
@@ -293,7 +293,11 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Avatar file is missing")
     }
 
-    //TODO: delete old image - assignment
+    const isDeleted = await deleteFromCloudinary(req.user?.avatar); 
+
+    if (!isDeleted) {
+        throw new ApiError(400, "Error while deleting the avatar")
+    }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
@@ -319,6 +323,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
     )
 })
 
+
 const updateUserCoverImage = asyncHandler(async(req, res) => {
     const coverImageLocalPath = req.file?.path
 
@@ -326,7 +331,11 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Cover image file is missing")
     }
 
-    //TODO: delete old image - assignment
+    const isDeleted = await deleteFromCloudinary(req.user?.coverImage); 
+
+    if (!isDeleted) {
+        throw new ApiError(400, "Error while deleting the coverImage")
+    }
 
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
