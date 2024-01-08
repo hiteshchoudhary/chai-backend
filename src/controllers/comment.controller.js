@@ -8,6 +8,23 @@ const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { videoId } = req.params;
   const { page = 1, limit = 10 } = req.query;
+  try {
+    const comments = await Comment.find({ video: videoId })
+      .populate("owner", "username")
+      .populate("video", "title");
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const paginatedComments = comments.slice(startIndex, endIndex);
+    const apiResponse = new ApiResponse(200, {
+      totalComments: comments.length,
+      currentPage: page,
+      totalPages: Math.ceil(comments.length / limit),
+      comments: paginatedComments.length > 0 ? paginatedComments : null,
+    });
+    res.status(200).json(apiResponse);
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong while fetching comments");
+  }
 });
 
 const addComment = asyncHandler(async (req, res) => {
