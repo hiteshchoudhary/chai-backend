@@ -11,11 +11,12 @@ import {v2 as cloudinary} from "cloudinary"
 const getAllVideos = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
     //TODO: get all videos based on query, sort, pagination
+
+
 })
 
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description, isPublished=true } = req.body
-    // TODO: get video, upload to cloudinary, create video
 
     if (
         [ title, description ].some((field) => field?.trim() === "")
@@ -58,8 +59,13 @@ const publishAVideo = asyncHandler(async (req, res) => {
         videoFile:video.url,
         thumbnail:thumbnail.url,
         duration:duration,
-        isPublished:isPublished
+        isPublished:isPublished,
+        owner:new mongoose.Types.ObjectId(req.user._id)
     })
+
+    if (!uploadedVideo) {
+        throw new ApiError(500, "Something went wrong while create the video document")
+    }
 
     const createdVideo = await Video.findById(uploadedVideo._id);
 
@@ -166,7 +172,7 @@ const getVideoById = asyncHandler(async (req, res) => {
     .json(
         new ApiResponse(
             200,
-            video,
+            video[0],
             "Video get successfully"
         )
     )
