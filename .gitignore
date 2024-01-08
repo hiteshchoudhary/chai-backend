@@ -122,3 +122,4 @@ dist
 
 # Intellij version folders
 .idea
+public/temp
