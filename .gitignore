@@ -119,3 +119,6 @@ dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 .DS_Store
+
+# Intellij version folders
+.idea
