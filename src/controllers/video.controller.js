@@ -5,13 +5,81 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary,deleteFromCloudinary} from "../utils/cloudinary.js"
-import {v2 as cloudinary} from "cloudinary"
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
+    const { page = 1, limit = 10, query = " ", sortBy, sortType, userId } = req.query
     //TODO: get all videos based on query, sort, pagination
 
+
+    const options ={
+        page,
+        limit
+    }
+
+    const aggregateOptions = [
+        {
+            $match:{
+                $and:[
+                    {
+                        isPublished:true
+                    },
+                    {
+                        $text:{
+                            $search:query
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields:{
+                score:{
+                    $meta:"textScore"
+                }
+            }
+        },
+        {
+            $lookup:{
+                from:"users",
+                localField:"owner",
+                foreignField:"_id",
+                as:"owner",
+                pipeline:[
+                    {
+                        $project:{
+                            username:1,
+                            fullName:1,
+                            avatar:1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields:{
+                owner:{$first:"$owner"}
+            }
+        },
+        {
+            $sort:{
+                score:-1,
+                views:-1
+            }
+        }
+    ];
+
+    const videos = await Video.aggregatePaginate(aggregateOptions,options);
+
+    if (!videos) {
+        throw new ApiError(500,"something want wrong while get all videos");
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200,comments,"get all videos successfully")
+    )
 
 })
 
@@ -49,16 +117,14 @@ const publishAVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "thumbnail upload failed on cloudinary")
     }
 
-    const { duration } = await cloudinary.api.resource(video.public_id);
-
-    // console.log(duration);
+    // console.log(video.duration)
 
     const uploadedVideo = await Video.create({
         title:title,
         description:description,
         videoFile:video.url,
         thumbnail:thumbnail.url,
-        duration:duration,
+        duration:video.duration,
         isPublished:isPublished,
         owner:new mongoose.Types.ObjectId(req.user._id)
     })
