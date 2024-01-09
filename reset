@@ -1,0 +1,200 @@
+[33mcommit 9991d84a1d444f41fc321c675a5954c330b8f465[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: souvik <ghoshsouvik167@gmail.com>
+Date:   Mon Jan 8 23:58:39 2024 +0530
+
+    publishAVideo controller completed
+
+[33mcommit 0a7b5a38c9d70d2232fd4ec215455427ab1d8db8[m
+Author: souvik <ghoshsouvik167@gmail.com>
+Date:   Mon Jan 8 22:35:03 2024 +0530
+
+    getallvideos controller created
+
+[33mcommit d1d9390211552898f6f004118e0491648416eed5[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Jan 6 18:34:25 2024 +0530
+
+    Add summary for contribution in repo in readme
+
+[33mcommit 3fd289c026721da6057000e129f1f65bb146bfd1[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Jan 6 18:09:03 2024 +0530
+
+    Add assignment for students
+
+[33mcommit 0150103024ce10be774daf9f461d1b2ef44f95a5[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Jan 6 15:49:07 2024 +0530
+
+    Add comment, like, playlist, and tweet models
+
+[33mcommit 7c91a52e37adba99e8109744107f815cd5679dc6[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Jan 6 15:29:33 2024 +0530
+
+    Fix logout functionality and remove console.log statement
+
+[33mcommit 5d3bea92219f526d54ff9e703c988f0cd001ce2c[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Thu Dec 21 01:54:56 2023 +0530
+
+    Add new routes for user controller
+
+[33mcommit a573049040f4b6007b380f651a1cd29a6c0ab251[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Thu Dec 21 01:45:15 2023 +0530
+
+    Add getWatchHistory endpoint
+
+[33mcommit 94a01dbe9ef97b5186cb18abf9daf5eea2c0758d[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Thu Dec 21 01:23:45 2023 +0530
+
+    add getUserChannelProfile API and update
+    Subscription model name
+
+[33mcommit df2484a7979b27c75dce55997c62988b443c17e9[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Dec 20 14:41:33 2023 +0530
+
+    Fix typo in subscription model schema
+
+[33mcommit 2c39bf667f0367d1409361f5f4fe52ee3e0782a3[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Dec 19 21:57:29 2023 +0530
+
+    Refactor getCurrentUser response format -
+    By ridam singhal
+
+[33mcommit 23b80aa4e20bdb950d99a47d8d09b60b9858b15b[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Dec 19 21:50:09 2023 +0530
+
+    Fix user update and avatar/cover image  assignment
+
+[33mcommit 802aa88f2412cafb4717f12f57a99c4e2e31d026[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Dec 19 15:59:15 2023 +0530
+
+    Add user account management endpoints
+
+[33mcommit 11bccd747da4ba97449af3be274521f285cd7c87[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Dec 19 15:30:32 2023 +0530
+
+    Add subscription model
+
+[33mcommit 4c3de94158e8bd243299a77cf1d347bdd158bfb3[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Dec 19 15:24:25 2023 +0530
+
+    Fix refresh token validation
+
+[33mcommit 0277c888023757c3660b10a1f7b54fab1d12b6fb[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sun Dec 17 16:39:21 2023 +0530
+
+    Add refreshAccessToken endpoint
+
+[33mcommit 591c8f74d4df9970ac2026cca5f328ce8eb10738[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Dec 13 17:24:57 2023 +0530
+
+    Fix username and email validation in loginUser
+    and process spelling in auth middleware
+
+[33mcommit 8974baa7cccd80e07eb1ebb6a875c1b05c2c07a4[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Dec 13 15:52:08 2023 +0530
+
+    add middleware and login logout controllers
+
+[33mcommit 65f8f3cf3fb382c0e3184a39a483ff737915731b[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Nov 21 02:26:21 2023 +0530
+
+    fix all register controller bugs
+
+[33mcommit 12e4963102db94dc2df596ed17eb66aaaddf0197[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Nov 21 00:58:05 2023 +0530
+
+    add register controller and bug fixes
+
+[33mcommit acdad8d66c2682939716ab835a400e867fa9524c[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sun Nov 19 22:12:45 2023 +0530
+
+    all setup configured
+
+[33mcommit 5f45529b84bc8b1a87b8959e3ae83876aca735f5[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Nov 11 17:46:51 2023 +0530
+
+    add multer and cloudinary files for file upload
+
+[33mcommit ac62010842ba988f82e8765ca1beb3450b19728b[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Nov 11 16:30:45 2023 +0530
+
+    fix stack spelling in ApiError file
+
+[33mcommit 7379b3116262f2808c4b26229261cb3222a65702[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Tue Nov 7 13:42:13 2023 +0530
+
+    minor bug in ApiResponse file
+
+[33mcommit 89c9dff840aee45a552a7e43c93f422b6ad8e3ab[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Mon Nov 6 19:16:16 2023 +0530
+
+    add user and video model
+
+[33mcommit fe28708a9598efc06e0a307c28d471c1e99a56d1[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Mon Nov 6 17:35:16 2023 +0530
+
+    utils code discussion
+
+[33mcommit 110e59c1e1e3b88940b0af7c5ecc6fd78fd94d51[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Nov 4 20:26:11 2023 +0530
+
+    connect to mongo atlas
+
+[33mcommit 4626cfcb67e8c0506266b12ab0f016d8de7854a0[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Nov 4 19:33:54 2023 +0530
+
+    re-recording required
+
+[33mcommit f66ae430a253e8e959579ba41e5b9a3fffe5e2e7[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Sat Nov 4 19:29:11 2023 +0530
+
+    connect with database
+
+[33mcommit b6d14b3cb8c3b16b583688fd71c46cfbd5db7620[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Nov 1 14:55:59 2023 +0530
+
+    add prettier config
+
+[33mcommit bc75552723b8d357b218e8a6d7b7cade5efd4d12[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Nov 1 14:48:52 2023 +0530
+
+    add structure changes
+
+[33mcommit 9e821a027755c1abba5ff82d5e936e63ad4c318c[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Nov 1 14:44:04 2023 +0530
+
+    setup project files - part 1
+
+[33mcommit 74fb1f26e8dad2b310631361120fc8114153151a[m
+Author: hiteshchoudhary <hitesh@hiteshchoudhary.com>
+Date:   Wed Nov 1 14:29:57 2023 +0530
+
+    add initial files for backend
