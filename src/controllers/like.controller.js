@@ -10,29 +10,30 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   try {
     const userId = req.user._id;
     const conditions = { likedBy: userId, video: videoId };
-    const like = await Like.find(conditions);
+    const like = await Like.findOne(conditions);
+    console.log("like here", like);
     if (!like) {
       const newLike = await Like.create({ video: videoId, likedBy: userId });
       return res
         .status(200)
         .json(new ApiResponse(201, newLike, "Liked successfully"));
     } else {
-      const removeLike = await Like.findOneAndRemove(conditions);
+      const removeLike = await Like.findOneAndDelete(conditions);
       return res
         .status(200)
         .json(new ApiResponse(201, removeLike, "Removed like successfully"));
     }
   } catch (error) {
-    throw new ApiError(500, "Something went wrong", error.message);
+    throw new ApiError(500, error.message);
   }
-});
+}); //working
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
   const userId = req.user._id;
   //TODO: toggle like on comment
   try {
-    const conditions = { likedBy: userId, tweet: tweetId };
+    const conditions = { likedBy: userId, comment: commentId };
     const like = await Like.findOne(conditions);
 
     if (!like) {
@@ -44,15 +45,15 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(201, newLike, "Liked successfully"));
     } else {
-      const removeLike = await Like.findOneAndRemove(conditions);
+      const removeLike = await Like.findOneAndDelete(conditions);
       return res
         .status(200)
         .json(new ApiResponse(201, removeLike, "Removed like successfully"));
     }
   } catch (error) {
-    throw new ApiError(500, "Something went wrong", error.message);
+    throw new ApiError(500, error.message);
   }
-});
+}); //working
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
   const { tweetId } = req.params;
@@ -71,26 +72,33 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(201, newLike, "Liked successfully"));
     } else {
-      const removeLike = await Like.findOneAndRemove(conditions);
+      const removeLike = await Like.findOneAndDelete(conditions);
       return res
         .status(200)
         .json(new ApiResponse(201, removeLike, "Removed like successfully"));
     }
-  } catch (error) {}
-});
+  } catch (error) {
+    throw new ApiError(500, error.message);
+  }
+}); //working
 
 const getLikedVideos = asyncHandler(async (req, res) => {
   //TODO: get all liked videos
   try {
     const userId = req.user._id;
-    const likedVideos = await Like.find({ likedBy: userId });
+    const likedVideos = await Like.find({
+      likedBy: userId,
+      video: { $ne: null },
+    });
     if (!likedVideos) {
       throw new ApiError(404, "No videos found");
     }
     res
       .status(201)
       .json(new ApiResponse(200, likedVideos, "Fetched successfull"));
-  } catch (error) {}
-});
+  } catch (error) {
+    throw new ApiError(500, error.message);
+  }
+});//working
 
 export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
