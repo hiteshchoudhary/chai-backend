@@ -25,7 +25,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, "Something went wrong while fetching comments");
   }
-});//working
+}); //working
 
 const addComment = asyncHandler(async (req, res) => {
   // TODO: add a comment to a video
@@ -64,7 +64,7 @@ const updateComment = asyncHandler(async (req, res) => {
     );
     console.log("result", result);
 
-    if (result.n === 0) {
+    if (!result) {
       throw new ApiError(
         400,
         "Cannot modify others' comment or comment not found"
@@ -80,7 +80,7 @@ const updateComment = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, error.message);
   }
-}); //Completed
+}); //working
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
@@ -107,6 +107,6 @@ const deleteComment = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, error.message);
   }
-});//working
+}); //working
 
 export { getVideoComments, addComment, updateComment, deleteComment };
