@@ -1,6 +1,9 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PublishAVideoBodySchema } from "../schema/video.schema.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { Video } from "../models/video.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
@@ -35,6 +38,23 @@ const publishAVideo = asyncHandler(async (req, res) => {
   if (!videoLocalPath || !thumbnailLocalPath) {
     throw new ApiError(400, "");
   }
+
+  const videoThumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+  const video = await uploadOnCloudinary(videoLocalPath);
+
+  const newVideo = await Video.create({
+    videoFile: video.url,
+    thumbnail: videoThumbnail.url,
+    title: title.trim(),
+    description: description.trim(),
+    duration: video.duration ?? 0,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      video: newVideo,
+    })
+  );
 });
 
 const getVideoById = asyncHandler(async (req, res) => {
