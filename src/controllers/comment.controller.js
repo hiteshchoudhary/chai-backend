@@ -25,71 +25,88 @@ const getVideoComments = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, "Something went wrong while fetching comments");
   }
-});
+});//working
 
 const addComment = asyncHandler(async (req, res) => {
   // TODO: add a comment to a video
   try {
     const { content } = req.body;
     const user = req.user._id;
-    const { video } = req.params;
-    if (!content || !content.text) throw new ApiError(400, "Missing fields");
-    const newComment = await Comment.create({ content, video, owner: user });
+    const { videoId } = req.params;
+    if (!content) throw new ApiError(400, "Missing fields");
+    const newComment = await Comment.create({
+      content,
+      video: videoId,
+      owner: user,
+    });
     return res
       .status(201)
       .json(new ApiResponse(200, newComment, "Commented added successfull"));
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Something went wrong while generating referesh and access token"
-    );
+    throw new ApiError(500, error.message);
   }
-});
+}); //working
 
 const updateComment = asyncHandler(async (req, res) => {
   // TODO: update a comment
   try {
-    const content = req.body;
-    const commentId = req.params.id;
-    let comment = await Comment.findByIdAndUpdate(commentId);
+    const { content } = req.body;
+    console.log("content", content);
+    const { commentId } = req.params;
+    console.log("commentId", commentId);
+
     const user = req.user._id;
-    if (!comment || comment.owner != user) {
-      throw new ApiError(400, "Cannot modify others comment");
+    console.log("user", user);
+
+    const result = await Comment.updateOne(
+      { _id: commentId, owner: user },
+      { $set: { content: content } }
+    );
+    console.log("result", result);
+
+    if (result.n === 0) {
+      throw new ApiError(
+        400,
+        "Cannot modify others' comment or comment not found"
+      );
     }
-    comment.content = content;
-    comment = await comment.save();
+    const updatedComment = await Comment.findById(commentId);
+
     return res
       .status(201)
-      .json(new ApiResponse(200, comment, "Commented updated successfull"));
+      .json(
+        new ApiResponse(200, updatedComment, "Commented updated successfull")
+      );
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Something went wrong while generating referesh and access token"
-    );
+    throw new ApiError(500, error.message);
   }
-});
+}); //Completed
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
   try {
     const user = req.user._id;
-    const commentId = req.params;
-    let comment = await Comment.findById(commentId);
-    if (!comment) {
-      throw new ApiError(400, "No comment found");
+    const { commentId } = req.params;
+    const result = await Comment.findByIdAndDelete({
+      _id: commentId,
+      owner: user,
+    });
+    if (result) {
+      return res.status(201).json(new ApiResponse(201, "Comment deleted"));
+    } else {
+      return res
+        .status(404)
+        .json(
+          new ApiResponse(
+            404,
+            null,
+            "Comment not found or not owned by the user"
+          )
+        );
     }
-    if (comment.owner !== user) {
-      throw new ApiError(400, "invalid user");
-    }
-    //delete comment
-    await Comment.findByIdAndRemove(commentId);
-    return res.status(201).json(new ApiResponse(201, "Comment deleted"));
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Something went wrong while generating referesh and access token"
-    );
+    throw new ApiError(500, error.message);
   }
-});
+});//working
 
 export { getVideoComments, addComment, updateComment, deleteComment };
