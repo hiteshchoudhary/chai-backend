@@ -316,7 +316,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         {new: true}
     ).select("-password")
 
-    const deleteAvatar =  await deleteOnCloudinary(public_id);
+    const deleteAvatar =  await deleteOnCloudinary(public_id,'image');
 
     return res
     .status(200)

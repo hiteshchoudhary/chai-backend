@@ -4,7 +4,14 @@ import {User} from "../models/user.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import {deleteOnCloudinary, uploadOnCloudinary} from "../utils/cloudinary.js"
+import { decode } from "jsonwebtoken"
+
+const findCloudinaryPublicId =  (url)=>{
+    const videoLinkSplit = url.split("/")
+    const video_public_id = videoLinkSplit[videoLinkSplit.length-1].split(".")[0]
+    return video_public_id
+}
 
 
 const getAllVideos = asyncHandler(async (req, res) => {
@@ -79,7 +86,28 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: delete video
+    if(!videoId){
+        throw new ApiError(400,"id not found");
+    }
+
+    const video = await Video.findByIdAndDelete(videoId)
+    if(!video){
+        throw new ApiError(400,"something wrong happened while fetching video");
+    }
+
+    //* check you are the owner of this video or not
+    if(!req.user._id.equals(video.owner._id)){
+        throw new ApiError(400,"you are not the owner of this video");
+    }
+    const videoFile = findCloudinaryPublicId(video.videoFile);
+    const thumbnail = findCloudinaryPublicId(video.thumbnail);
+    
+    const deleteVideo = await deleteOnCloudinary(videoFile, 'video');
+    const deleteThumbnail = await deleteOnCloudinary(thumbnail, 'image');
+
+    res
+    .status(200)
+    .json(new ApiResponse(200, {deleteVideo, deleteThumbnail} ,"video delete successfully"));
 })
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
