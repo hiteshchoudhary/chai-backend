@@ -1,0 +1,1266 @@
+{
+	"info": {
+		"_postman_id": "aa2430e9-5d1d-4e3e-ab4f-3a126b26412f",
+		"name": "chai-aur-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29247156"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullname",
+									"value": "Suraj Gupta",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "suraj@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "suraj@123",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "skg_suraj",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/home/suraj/Downloads/defaultImg2.png"
+								},
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/users/register",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"okay@example.com\",\n    \"password\":\"okay@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/logout",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update avatar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/update-avatar",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"update-avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh all tokens",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/refresh-token",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newPassword\":\"okay@123\",\n    \"oldPassword\":\"suraj123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/change-password",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/user-details",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"user-details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user details",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"fullname\":\"Okay Gupta\"\n    \"email\" : \"okay@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/users/update-user-details",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"update-user-details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update avatar",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/home/suraj/Downloads/WhatsApp Image 2023-09-23 at 11.25.05 AM.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/users/update-avatar",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"update-avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cover image",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/home/suraj/Pictures/banner.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/users/update-coverimage",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"update-coverimage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get channel details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/c/skg_suraj",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"c",
+								"skg_suraj"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get watch history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/users/watch-history",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"users",
+								"watch-history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "videos",
+			"item": [
+				{
+					"name": "get videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/videos?page=1&limit=10&sortBy=views&sortType=asc&userId=658561bda83c864354ff6530",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "query",
+									"value": "funny",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "views"
+								},
+								{
+									"key": "sortType",
+									"value": "asc"
+								},
+								{
+									"key": "userId",
+									"value": "658561bda83c864354ff6530"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "A very nice video uploaded by okay",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": " This is a random description again",
+									"type": "text"
+								},
+								{
+									"key": "videoFile",
+									"type": "file",
+									"src": "/home/suraj/Downloads/okay.mp4"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/home/suraj/Downloads/thumbnail-2.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/videos",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get video by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/videos/:videoId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659d66614d2470cc3f8c5b76"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update video",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Update Title ",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This is updated description ",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/home/suraj/Downloads/pic-thumbnail.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/videos/659c26f887bc60afbc26fe3e",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos",
+								"659c26f887bc60afbc26fe3e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete video",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/videos/:videoId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659d66614d2470cc3f8c5b76"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle publish status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/videos/toggle/publish/659c26f887bc60afbc26fe3e",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"videos",
+								"toggle",
+								"publish",
+								"659c26f887bc60afbc26fe3e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "like",
+			"item": [
+				{
+					"name": "toggle video like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/likes/toggle/v/:videoId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"v",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659d66614d2470cc3f8c5b76"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle tweet like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/likes/toggle/t/:tweetId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"t",
+								":tweetId"
+							],
+							"variable": [
+								{
+									"key": "tweetId",
+									"value": "659d6eb474be478c0e4e853f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle comment like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/likes/toggle/c/:commentId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"c",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": "659e9ae8d702f885da725e9c"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get liked videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/likes/videos",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"likes",
+								"videos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "health check",
+			"item": [
+				{
+					"name": "check health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/healthcheck",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "get video comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/comments/v/:videoId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"v",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659d66614d2470cc3f8c5b76"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add comment to video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"What a fantastic video just loved it 2 okay\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/comments/v/:videoId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"v",
+								":videoId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659d66614d2470cc3f8c5b76"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update comment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"updated comment\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/comments/c/:commentId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"c",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": "659d689d4d2470cc3f8c5b98"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete comments",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/comments/c/:commentId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"c",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": "659d689d4d2470cc3f8c5b98"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get tweet comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/comments/t/:tweetId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"t",
+								":tweetId"
+							],
+							"variable": [
+								{
+									"key": "tweetId",
+									"value": "659d6eb474be478c0e4e853f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add comment to tweet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"comment on tweet\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/comments/t/:tweetId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"comments",
+								"t",
+								":tweetId"
+							],
+							"variable": [
+								{
+									"key": "tweetId",
+									"value": "659d6eb474be478c0e4e853f"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tweet",
+			"item": [
+				{
+					"name": "create tweet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"This is a tweet content another by same user again one more time\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/tweets",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tweets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user tweets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/tweets/user/:userId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tweets",
+								"user",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "6599fb7ff3356688b33f57b6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update tweet",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"Updated tweet content\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/tweets/:tweetId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tweets",
+								":tweetId"
+							],
+							"variable": [
+								{
+									"key": "tweetId",
+									"value": "659d6f3cd83810070f1b8950"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete tweet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/tweets/:tweetId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"tweets",
+								":tweetId"
+							],
+							"variable": [
+								{
+									"key": "tweetId",
+									"value": "659d6f3cd83810070f1b8950"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "playlist",
+			"item": [
+				{
+					"name": "create playlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"myPlaylist 2\",\n    \"description\":\"This is my my Playlist 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/playlist",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get users playlist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/playlist/user/:userId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								"user",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "6599fb7ff3356688b33f57b6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get playlist by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/playlist/:playlistId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								":playlistId"
+							],
+							"variable": [
+								{
+									"key": "playlistId",
+									"value": "659e5371bb227e2a8fcb9e07"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add video to playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/playlist/add/:videoId/:playlistId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								"add",
+								":videoId",
+								":playlistId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659c26f887bc60afbc26fe3e"
+								},
+								{
+									"key": "playlistId",
+									"value": "659e5586c2f6112775fec52d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove video from playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/playlist/remove/:videoId/:playlistId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								"remove",
+								":videoId",
+								":playlistId"
+							],
+							"variable": [
+								{
+									"key": "videoId",
+									"value": "659c26f887bc60afbc26fe3e"
+								},
+								{
+									"key": "playlistId",
+									"value": "659e5586c2f6112775fec52d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"myPlaylist\",\n    \"description\":\"updated description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/playlist/:playlistId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								":playlistId"
+							],
+							"variable": [
+								{
+									"key": "playlistId",
+									"value": "659e5586c2f6112775fec52d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a playlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/playlist/:playlistId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"playlist",
+								":playlistId"
+							],
+							"variable": [
+								{
+									"key": "playlistId",
+									"value": "659e5586c2f6112775fec52d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dashboard",
+			"item": [
+				{
+					"name": "get channel video",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/dashboard/videos?page=1&limit=10&sortBy&sortType",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"dashboard",
+								"videos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortBy",
+									"value": null
+								},
+								{
+									"key": "sortType",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get channel stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/dashboard/stats",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"dashboard",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subscriptions",
+			"item": [
+				{
+					"name": "toggle subscriptions",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/subscriptions/c/:channelId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"subscriptions",
+								"c",
+								":channelId"
+							],
+							"variable": [
+								{
+									"key": "channelId",
+									"value": "658561bda83c864354ff6530"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get subscribed channels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/subscriptions/subscribed-channels/:userId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"subscriptions",
+								"subscribed-channels",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "658561bda83c864354ff6530"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get channels subscribers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/subscriptions/channel-subscribers/:channelId",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"subscriptions",
+								"channel-subscribers",
+								":channelId"
+							],
+							"variable": [
+								{
+									"key": "channelId",
+									"value": "658561bda83c864354ff6530"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
