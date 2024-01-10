@@ -4,7 +4,11 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  deleteOnCloudinary,
+  deleteVideoOnCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
@@ -44,43 +48,59 @@ const getAllVideos = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: "Internal Server Error",
+      message: "Internal Server Error",
+      data: error.message,
     });
   }
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  //Continue working from here
   const { title, description } = req.body;
+
   // TODO: get video, upload to cloudinary, create video
   try {
-    const video = req?.file.video;
-    const thumbnail = req?.file.thumbnail;
-    if (!title || !description || !video || !thumbnail) {
+    const videoUrl = req?.files.videoUrl;
+    console.log("video here", videoUrl);
+    const thumbnail = req?.files.thumbnail;
+    console.log("thumbnail here", thumbnail);
+
+    if (!title || !description || !videoUrl || !thumbnail) {
       throw new ApiError(400, "Missing data");
     }
-    //Uploading videoFile to Cloudinary
-    const videoFile = video
-      ? await uploadOnCloudinary(video, process.env.FOLDER_NAME, null, 100)
+    //Uploading video File to Cloudinary
+    const videoFile = videoUrl
+      ? await uploadOnCloudinary(
+          videoUrl[0].path,
+          process.env.FOLDER_NAME,
+          null,
+          100
+        )
       : null;
+    console.log("videoFile here", videoFile);
     // Uploading Thumbnail image to Cloudinary
     const thumbnailFile = thumbnail
-      ? await uploadOnCloudinary(thumbnail, process.env.FOLDER_NAME, null, 100)
+      ? await uploadOnCloudinary(
+          thumbnail[0].path,
+          process.env.FOLDER_NAME,
+          null,
+          100
+        )
       : null;
+    console.log("thumbnailFile", thumbnailFile);
     const newVideo = await Video.create({
       videoFile: videoFile.secure_url,
       thumbnail: thumbnailFile.secure_url,
       title,
       description,
-      duration,
+      duration: videoFile.duration,
     });
     res
       .status(201)
       .json(new ApiResponse(200, newVideo, "Video uploaded successfully"));
   } catch (error) {
-    throw new ApiError(500, "something went wrong", error.message);
+    throw new ApiError(500, error.message);
   }
-});
+}); // successfully publish kardia
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -98,7 +118,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     throw new ApiError(500, "something went wrong", error.message);
   }
-});
+}); // successfully video fetch karlia
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -120,7 +140,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     const updatedVideo = await Video.findOneAndUpdate(videoId, {
       title,
       description,
-      thumbnail:imgUrl.secure_url,
+      thumbnail: imgUrl.secure_url,
     });
     return res
       .status(201)
@@ -128,20 +148,22 @@ const updateVideo = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, "something went wrong", error.message);
   }
-});
+});//done
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   //TODO: delete video
   try {
     const video = await Video.findById(videoId);
+    console.log("this video", video);
     if (!video) {
       throw new ApiError(400, "Video not found");
     }
     //delete video from cloudinary
-    const videoToDelete = deleteOnCloudinary(video?.videoFile);
+    const videoToDelete = await deleteVideoOnCloudinary(video?.videoFile);
     //delete thumbnail from cloudinary
-    const thumbnailToDelete = deleteOnCloudinary(video?.thumbnail);
+    console.log(video?.thumbnail)
+    const thumbnailToDelete = await deleteOnCloudinary(video?.thumbnail);
     const result = await Video.findByIdAndDelete(videoId);
     //delete video from owner
     if (!result) {
@@ -151,9 +173,9 @@ const deleteVideo = asyncHandler(async (req, res) => {
       .status(201)
       .json(new ApiResponse(200, result, "Video deleted successfully"));
   } catch (error) {
-    throw new ApiError(500, "something went wrong", error.message);
+    throw new ApiError(500, error.message);
   }
-});
+}); //done
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -162,7 +184,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     if (!video) {
       throw new ApiError(404, "Video not found");
     }
-    video.isPublic = !video.isPublic;
+    video.isPublished = !video.isPublished;
     await video.save();
     res
       .status(200)
@@ -170,7 +192,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(500, "something went wrong", error.message);
   }
-});
+}); //nailed it
 
 export {
   getAllVideos,
