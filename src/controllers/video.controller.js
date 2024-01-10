@@ -4,6 +4,7 @@ import { PublishAVideoBodySchema } from "../schema/video.schema.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Video } from "../models/video.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { isValidObjectId, Types } from "mongoose";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
@@ -11,9 +12,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  // const { title, description} = req.body
-  // TODO: get video, upload to cloudinary, create video
-
   const { _id } = req.user;
 
   const requestBodyValidationResult = PublishAVideoBodySchema.safeParse(
@@ -48,6 +46,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     title: title.trim(),
     description: description.trim(),
     duration: video.duration ?? 0,
+    owner: _id,
   });
 
   return res.status(200).json(
@@ -59,7 +58,55 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  //TODO: get video by id
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Provide a valid videoId", [
+      "Provide a valid videoId",
+    ]);
+  }
+
+  const video = await Video.aggregate([
+    {
+      $match: {
+        _id: new Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+      },
+    },
+  ]);
+
+  if (video.length < 1) {
+    throw new ApiError(400, "No such video found!!");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      video: video[0],
+    })
+  );
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
