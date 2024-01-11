@@ -1,7 +1,13 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { PublishAVideoBodySchema } from "../schema/video.schema.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  PublishAVideoBodySchema,
+  UpdateAVideoBodySchema,
+} from "../schema/video.schema.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../utils/cloudinary.js";
 import { Video } from "../models/video.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { isValidObjectId, Types } from "mongoose";
@@ -30,8 +36,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
   const videoLocalPath = req.files["videoFile"][0]?.path;
   const thumbnailLocalPath = req.files["thumbnail"][0]?.path;
-
-  //TODO: Complete two paths by tomorrow.
 
   if (!videoLocalPath || !thumbnailLocalPath) {
     throw new ApiError(400, "");
@@ -119,7 +123,85 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  //TODO: update video details like title, description, thumbnail
+  const { _id } = req.user;
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Please provide a valid ObjectID", [
+      "Please provide a valid ObjectID",
+    ]);
+  }
+
+  const requestBodyValidationResult = UpdateAVideoBodySchema.safeParse(
+    req.body
+  );
+
+  if (!requestBodyValidationResult.success) {
+    throw new ApiError(
+      400,
+      requestBodyValidationResult.error.errors[0]?.message,
+      requestBodyValidationResult.error.errors.map((e) => e.message)
+    );
+  }
+
+  const requestBody = requestBodyValidationResult.data;
+  const thumbnailLocalPath = req.file?.path;
+
+  const updateObject = {};
+
+  if (requestBody.title) updateObject["title"] = requestBody.title;
+  if (requestBody.description)
+    updateObject["description"] = requestBody.description;
+
+  if (thumbnailLocalPath) {
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+    updateObject["thumbnail"] = thumbnail.url;
+  }
+
+  if (Object.keys(updateObject).length < 1) {
+    throw new ApiError(400, "Please provide some fields to update");
+  }
+
+  const updatedVideo = await Video.findOneAndUpdate(
+    {
+      _id: videoId,
+      owner: _id,
+    },
+    [
+      {
+        $addFields: {
+          oldThumbnail: "$thumbnail",
+        },
+      },
+      {
+        $set: updateObject,
+      },
+    ],
+    {
+      new: true,
+    }
+  ).lean();
+
+  if (!updatedVideo) {
+    throw new ApiError(
+      404,
+      "Either the video does not exist or you are not authorized"
+    );
+  }
+
+  if (updateObject["thumbnail"]) {
+    const res = await deleteFromCloudinary(updatedVideo.oldThumbnail, true);
+
+    if (!res) console.log("Deletion failed!! you back and check!!");
+  }
+
+  updatedVideo["oldThumbnail"] = undefined;
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      video: updatedVideo,
+    })
+  );
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {

@@ -18,16 +18,16 @@
     tar "^6.1.11"
 
 "@mongodb-js/saslprep@^1.1.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@mongodb-js/saslprep/-/saslprep-1.1.1.tgz#9a6c2516bc9188672c4d953ec99760ba49970da7"
-  integrity sha512-t7c5K033joZZMspnHg/gWPE4kandgc2OxE74aYOtGKfgB9VPuVJPix0H6fhmm2erj5PBJ21mqcx34lpIGtUCsQ==
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/saslprep/-/saslprep-1.1.3.tgz#ef77edae4061cdc856ea2d355d582e9b49fae8fe"
+  integrity sha512-SyCxhJfmK6MoLNV5SbDpNdUy9SDv5H7y9/9rl3KpnwgTHWuNNMc87zWqbcIZXNWY+aUjxLGLEcvHoLagG4tWCg==
   dependencies:
     sparse-bitfield "^3.0.3"
 
 "@types/node@*":
-  version "20.10.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.7.tgz#40fe8faf25418a75de9fe68a8775546732a3a901"
-  integrity sha512-fRbIKb8C/Y2lXxB5eVMj4IU7xpdox0Lh8bUPEdtLysaylsml1hOOx1+STloRs/B9nf7C6kPRmmg/V7aQW7usNg==
+  version "20.11.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.0.tgz#8e0b99e70c0c1ade1a86c4a282f7b7ef87c9552f"
+  integrity sha512-o9bjXmDNcF7GbM4CNQpmi+TutCgap/K3w1JyKgxAjqx41zp9qlIAVFi0IhCNsJcXolEqLWhbFbEeL0PvYm4pcQ==
   dependencies:
     undici-types "~5.26.4"
 
@@ -213,9 +213,9 @@ cloudinary-core@^2.13.0:
   integrity sha512-Nt0Q5I2FtenmJghtC4YZ3MZZbGg1wLm84SsxcuVwZ83OyJqG9CNIGp86CiI6iDv3QobaqBUpOT7vg+HqY5HxEA==
 
 cloudinary@^1.41.0:
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.41.1.tgz#356610d763ba1d4d6e4c10b4db28db34fb5e153f"
-  integrity sha512-EBNEmhSNtES8d9dAd1tg9mKJk2jB5LvRxDcgNk7JiMDWNeHkSpwroJwnHZN4XdxKvjLnj9a9pbOgdPW90GkG1g==
+  version "1.41.2"
+  resolved "https://registry.yarnpkg.com/cloudinary/-/cloudinary-1.41.2.tgz#29b567f6f320dd39a981e69d3787b559047aa34f"
+  integrity sha512-9gH6ofz+N8AzfjqtmTgB9lVxwWcroHFfMOOM6iiX/g1H+KYz+sArClXWtd0prRE6m/IoBBBbbaJ12yRdJNnMxA==
   dependencies:
     cloudinary-core "^2.13.0"
     core-js "^3.30.1"
@@ -833,9 +833,9 @@ mongoose-aggregate-paginate-v2@^1.0.6:
   integrity sha512-Xij2wux3xs9yfXhV9d7M1P92WJsz39fyNJWyVAcSDhVO4HZnoM2zz03b2ZLCT13ha5TJL9uPM+jw1Sj2IqjHAQ==
 
 mongoose@^8.0.0:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-8.0.3.tgz#f3708ba0f40b6dec8f5f1a5d40abd69a80207114"
-  integrity sha512-LJRT0yP4TW14HT4r2RkxqyvoTylMSzWpl5QOeVHTnRggCLQSpkoBdgbUtORFq/mSL2o9cLCPJz+6uzFj25qbHw==
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-8.0.4.tgz#d1177529f4e4eca327506f4fc0a304754081d9cd"
+  integrity sha512-wN9qvdevX3+922VnLT7CpaZRT3jmVCBOK2QMHMGeScQxDRnFMPpkuI9StEPpZo/3x8t+kbzH7F8RMPsyNwyM4w==
   dependencies:
     bson "^6.2.0"
     kareem "2.5.1"
