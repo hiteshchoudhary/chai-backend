@@ -58,6 +58,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const { _id } = req.user;
 
   if (!isValidObjectId(videoId)) {
     throw new ApiError(400, "Provide a valid videoId", [
@@ -99,7 +100,14 @@ const getVideoById = asyncHandler(async (req, res) => {
   ]);
 
   if (video.length < 1) {
-    throw new ApiError(400, "No such video found!!");
+    throw new ApiError(404, "No such video found!!");
+  }
+
+  if (
+    !video[0].isPublished &&
+    video[0].owner._id.toString() !== _id.toString()
+  ) {
+    throw new ApiError(404, "No such video found!!");
   }
 
   return res.status(200).json(
@@ -123,7 +131,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { _id } = req.user;
 
-  const updatedVideo = await Video.findByIdAndUpdate(
+  const updatedVideo = await Video.findOneAndUpdate(
     {
       _id: videoId,
       owner: _id,
