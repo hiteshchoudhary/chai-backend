@@ -78,9 +78,9 @@ const publishAVideo = asyncHandler(async (req, res) => {
     videoFile: videoFile.url,
     thumbnail: thumbnail.url,
     title,
-    duration:videoFile.duration,
+    duration: videoFile.duration,
     description,
-    owner: req.user._id
+    owner: req.user._id,
   });
 
   return res
@@ -93,11 +93,79 @@ const publishAVideo = asyncHandler(async (req, res) => {
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   //TODO: get video by id
+  if (!videoId) {
+    throw new ApiError(401, "videoId mustbe requried");
+  }
+
+  const video = await Video.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(videoId) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  if (video?.length === 0) {
+    throw new ApiError(409, "could not find video of this id");
+  }
+  // console.log(video)
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, video[0], "video found sucessfully"));
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const { title, description } = req.body;
+
   //TODO: update video details like title, description, thumbnail
+  if (!videoId) {
+    throw new ApiError(401, "videoId must be requried");
+  }
+  if (!title && !description) {
+    throw new ApiError(409, "title or description requried ");
+  }
+  const thumbnailLocalPath = req.file?.path;
+
+  const thumbnail = uploadOnCloudinary(thumbnailLocalPath);
+  const video = await Video.findById({
+    _id: new mongoose.Types.ObjectId(videoId),
+  });
+  if (!video) {
+    throw new ApiError(405, "video was not found");
+  }
+  if (title) {
+    video.title = title;
+  }
+  if (description) {
+    video.description = description;
+  }
+  if (title) {
+    video.title = title;
+  }
+  if (thumbnail?.url) {
+    video.thumbnail = thumbnail.url;
+  }
+  await video.save({ validateBeforeSave: false });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, video, "update succesfully"));
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
