@@ -14,7 +14,6 @@ import { isValidObjectId, Types } from "mongoose";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page, limit, query, sortBy, sortType, userId } = req.query;
-  //TODO: get all videos based on query, sort, pagination
   const { _id } = req.user;
 
   const sortObject = {};
@@ -278,7 +277,45 @@ const updateVideo = asyncHandler(async (req, res) => {
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const { _id } = req.user;
+
   //TODO: delete video
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Provide a valid ObjectID");
+  }
+
+  const deletedVideo = await Video.findOneAndDelete({
+    _id: videoId,
+    owner: _id,
+  });
+
+  if (!deletedVideo) {
+    throw new ApiError(
+      404,
+      "Either this video does not exists or you do have access to perform the requested action on it."
+    );
+  }
+
+  const thumbnailDeletionResult = await deleteFromCloudinary(
+    deletedVideo.thumbnail,
+    true
+  );
+
+  const videoDeletionResult = await deleteFromCloudinary(
+    deletedVideo.videoFile,
+    true,
+    "video"
+  );
+
+  if (!thumbnailDeletionResult) console.log("Thumbnail not deleted!!");
+  if (!videoDeletionResult) console.log("Video file not deleted!!");
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      deletedVideo,
+    })
+  );
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {

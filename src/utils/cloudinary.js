@@ -25,7 +25,7 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-const deleteFromCloudinary = async (resourceUrl, inFolder) => {
+const deleteFromCloudinary = async (resourceUrl, inFolder, resourceType) => {
   const urlArray = resourceUrl.split("/");
 
   const resourcePublicId = inFolder
@@ -34,7 +34,9 @@ const deleteFromCloudinary = async (resourceUrl, inFolder) => {
       }`
     : `${urlArray[urlArray.length - 1].split(".")[0]}`;
 
-  const res = await cloudinary.uploader.destroy(resourcePublicId);
+  const res = await cloudinary.uploader.destroy(resourcePublicId, {
+    resource_type: resourceType ?? "image",
+  });
 
   return res.result?.toString().toLowerCase() === "ok";
 };
