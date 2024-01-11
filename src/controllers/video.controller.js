@@ -183,6 +183,12 @@ const updateVideo = asyncHandler(async (req, res) => {
   ).lean();
 
   if (!updatedVideo) {
+    if (updateObject["thumbnail"]) {
+      const res = await deleteFromCloudinary(updateObject["thumbnail"], true);
+
+      if (!res) console.log("Deletion failed!! you back and check!!");
+    }
+
     throw new ApiError(
       404,
       "Either the video does not exist or you are not authorized"
