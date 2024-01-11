@@ -39,7 +39,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400,"something went wrong while uploading");
     }
     
-    console.table(videoUploadOnCloudinaryResponse);
 
     const video = await Video.create({
         videoFile : videoUploadOnCloudinaryResponse?.url || "",
@@ -80,7 +79,41 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: update video details like title, description, thumbnail
+    const { title, description} = req.body
+    const thumbnailLocalPath = req.file?.path
+    
+    if(!videoId){
+        throw new ApiError(400,"id not found");
+    }
+
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new ApiError(400,"something wrong happened while fetching video");
+    }
+
+    //* check you are the owner of this video or not
+    if(!req.user._id.equals(video.owner._id)){
+        throw new ApiError(400,"you are not the owner of this video");
+    }
+
+    //* upload if data is available
+    if(title)video.title = title;
+    if(description) video.description = description; 
+    if(thumbnailLocalPath){
+        const newThumbnailURL = await uploadOnCloudinary(thumbnailLocalPath);
+        if(!newThumbnailURL){
+            throw new ApiError(500,"something went wrong while uploading thumbnail");
+        }
+        await deleteOnCloudinary(video.thumbnail, 'image')
+        video.thumbnail = newThumbnailURL;
+
+    }
+
+    await video.save({validateBeforeSave: false})
+
+    res
+    .status(200)
+    .json( new ApiResponse(200, {video},'Success'))
 
 })
 
@@ -102,8 +135,12 @@ const deleteVideo = asyncHandler(async (req, res) => {
     const videoFile = findCloudinaryPublicId(video.videoFile);
     const thumbnail = findCloudinaryPublicId(video.thumbnail);
     
-    const deleteVideo = await deleteOnCloudinary(videoFile, 'video');
-    const deleteThumbnail = await deleteOnCloudinary(thumbnail, 'image');
+    try {
+        var deleteVideo = await deleteOnCloudinary(videoFile, 'video');
+        var deleteThumbnail = await deleteOnCloudinary(thumbnail, 'image');
+    } catch (error) {
+        throw new ApiError(500,"Something went wrong while deleting data on cloudinary");
+    }
 
     res
     .status(200)
@@ -112,6 +149,30 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
+    
+    if(!videoId){
+        throw new ApiError(400,"id not found");
+    }
+
+    const video = await Video.findById(videoId)
+    console.log(video);
+    if(!video){
+        throw new ApiError(400,"something wrong happened while fetching video");
+    }
+
+    //* check you are the owner of this video or not
+    if(!req.user._id.equals(video.owner._id)){
+        throw new ApiError(400,"you are not the owner of this video");
+    }
+
+    video.isPublished = !video.isPublished;
+
+    await video.save({validateBeforeSave: false})
+
+    res
+    .status(200)
+    .json(new ApiResponse(200, {} ,"  successfully"));
+
 })
 
 export {
