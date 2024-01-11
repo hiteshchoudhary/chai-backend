@@ -4,15 +4,65 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
+
 const getVideoComments = asyncHandler(async (req, res) => {
-    //TODO: get all comments for a video
-    const {videoId} = req.params
-    const {page = 1, limit = 10} = req.query
+    try {
+        const { videoId } = req.params;
+        const { page = 1, limit = 10 } = req.query;
 
-    // aggregate pipeline will be used
+        const pipeline = [ 
+            {
+                $match: {
+                    video: mongoose.Types.ObjectId(videoId),
+                },
+            }, 
+            {
+                $sort: { createdAt: -1 },
+            }, 
+            {
+                $skip: (page - 1) * limit,
+            },
+            {
+                $limit: parseInt(limit),
+            },
+            // pupulating the user details
+            {
+                $lookup: {
+                    from: 'Users',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'userDetails',
+                },
+            },  
+            {
+                $project: {
+                    _id: 1,
+                    text: 1,
+                    createdAt: 1, 
+                    user: {
+                        _id: '$userDetails._id',
+                        username: '$userDetails.username',
+                        avatar: '$userDetails.avatar',
+                    },
+                },
+            },
+        ];
 
-    
-})
+        const comments = await Comment.aggregate(pipeline);
+
+        res.status(200).json({
+            success: true,
+            data: comments,
+        });
+    } catch (error) {
+        console.error('Error getting video comments:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal Server Error',
+        });
+    }
+});
+
 
 const addComment = asyncHandler(async (req, res) => {
     // TODO: add a comment to a video

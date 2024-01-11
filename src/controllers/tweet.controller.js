@@ -17,6 +17,9 @@ const createTweet = asyncHandler(async (req, res) => {
         }
 
         // Check if the user (owner) exists
+        
+        console.log(content);
+
         const user = await User.findById(owner);
         if (!user) {
             throw new ApiError(404, "User not found")
