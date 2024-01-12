@@ -7,18 +7,38 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 const createPlaylist = asyncHandler(async (req, res) => {
     const {name, description} = req.body
+    if(!(name || description)) throw new ApiError(400,"name or description is required");
 
-    //TODO: create playlist
+    const playlist = await Playlist.create({
+        name,
+        description,
+        owner : req.user
+    })
+
+    if(!playlist) throw new ApiError(500,"playlist is creating failed");
+
+
+    res
+    .status(200)
+    .json( new ApiResponse(200 , playlist, "playlist created successfully"))
 })
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
     const {userId} = req.params
-    //TODO: get user playlists
+    if(!userId) throw new ApiError(400,"userId required");
+
+    const getUserPlaylists = await Playlist.find({ owner : userId });
+
+    if(!getUserPlaylists) throw new ApiError(500,"playlists not found");
+
+    res
+    .status(200)
+    .json( new ApiResponse(200 , getUserPlaylists, "playlists found successfully"))
 })
 
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
-    //TODO: get playlist by id
+    
 })
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
