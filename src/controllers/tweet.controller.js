@@ -6,7 +6,7 @@ import {
 } from "../schema/tweet.schema.js";
 import { Tweet } from "../models/tweet.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId, Types } from "mongoose";
 
 const createTweet = asyncHandler(async (req, res) => {
   const requestBodyValidationResult = CreateTweetSchema.safeParse(req.body);
@@ -36,7 +36,83 @@ const createTweet = asyncHandler(async (req, res) => {
 
 const getUserTweets = asyncHandler(async (req, res) => {
   // TODO: get user tweets
-  const { userId, page, limit } = req.query;
+  const { page, limit } = req.query;
+  const { userId } = req.params;
+
+  const pageNumber = Number(page) ? Number.parseInt(page) : 1;
+  const sizeLimit = Number(limit) ? Number.parseInt(limit) : 10;
+
+  if (!isValidObjectId(userId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as tweetId", [
+      "Provide a valid ObjectID as tweetId",
+    ]);
+  }
+
+  const tweets = await Tweet.aggregate([
+    {
+      $match: {
+        owner: new Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              fullName: 1,
+              avatar: 1,
+              username: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "liked_by",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+        likes: {
+          $size: "$liked_by",
+        },
+      },
+    },
+    {
+      $unset: ["liked_by"],
+    },
+    {
+      $skip: (pageNumber - 1) * sizeLimit,
+    },
+    {
+      $limit: sizeLimit,
+    },
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      tweets,
+    })
+  );
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
