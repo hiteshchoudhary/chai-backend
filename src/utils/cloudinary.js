@@ -13,6 +13,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     //upload the file on cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
+      media_metadata: true,
     });
     // file has been uploaded successfull
     console.log("file is uploaded on cloudinary ", response.url);
@@ -20,6 +21,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); // remove the locally saved temporary file as the upload operation got failed
+    console.log("something went wrong", error.message);
     return null;
   }
 };
@@ -27,27 +29,34 @@ const uploadOnCloudinary = async (localFilePath) => {
 const deleteOnCloudinary = async (url) => {
   try {
     //Getting public Id
-    const publicId = url.split("/").pop().split(".")[0];
-    // console.log("This is public Id", publicId);
+    const publicId = String(url.split("/").pop().split(".")[0]);
+    console.log("This is public Id of thumbnail", publicId);
     //Validating Public ID
     if (!publicId) {
       return console.log("No public Id present");
     }
-    const options = {
-      invalidate: true,
-    };
-
     // Delete the file using the public ID
-    cloudinary.uploader.destroy(publicId, function (error, result) {
-      console.log(result, error);
-    });
-    return console.log("Deleted successfully");
+    cloudinary.uploader.destroy(publicId).then((result) => console.log(result));
   } catch (error) {
     console.log(error.message);
-    return res
-      .status(500)
-      .json({ message: "something went wrong", data: error.message });
+  }
+};
+const deleteVideoOnCloudinary = async (url) => {
+  try {
+    //Getting public Id
+    const publicId = url.split("/").pop().split(".")[0];
+    console.log("This is public Id", publicId);
+    //Validating Public ID
+    if (!publicId) {
+      return console.log("No public Id present");
+    }
+    // Delete the file using the public ID
+    cloudinary.uploader
+      .destroy(publicId, { resource_type: "video" })
+      .then((result) => console.log(result));
+  } catch (error) {
+    console.log(error.message);
   }
 };
 
-export { uploadOnCloudinary, deleteOnCloudinary };
+export { uploadOnCloudinary, deleteOnCloudinary, deleteVideoOnCloudinary };

@@ -92,7 +92,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       thumbnail: thumbnailFile.secure_url,
       title,
       description,
-      duration: (videoFile.duration / 60).toFixed(1),
+      duration: (videoFile.duration / 60).toFixed(2),
       owner: userId,
     });
     res

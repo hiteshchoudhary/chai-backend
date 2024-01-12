@@ -19,7 +19,7 @@ router
     .post(
         upload.fields([
             {
-                name: "videoFile",
+                name: "videoUrl",
                 maxCount: 1,
             },
             {
