@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
+import { asyncHandler } from "./asyncHandler";
 
 
 cloudinary.config({ 
@@ -22,6 +23,21 @@ const uploadOnCloudinary = async (localFilePath) => {
 
     } catch (error) {
         fs.unlinkSync(localFilePath) // remove the locally saved temporary file as the upload operation got failed
+        return null;
+    }
+}
+
+
+const deleteOnCloudinary = async (oldData) => {
+    try {
+        const publicIdToDelete = (imageURL) => imageURL.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicIdToDelete, (error, result) => {
+            if (error) {
+              throw new ApiError(401,"Error in Uploading to cloud")
+            } 
+        })
+    
+    } catch (error) {
         return null;
     }
 }
