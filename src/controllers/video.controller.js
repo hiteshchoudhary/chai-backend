@@ -56,7 +56,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
-
+  const userId = req.user._id;
   // TODO: get video, upload to cloudinary, create video
   try {
     const videoUrl = req?.files.videoUrl;
@@ -92,7 +92,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
       thumbnail: thumbnailFile.secure_url,
       title,
       description,
-      duration: videoFile.duration,
+      duration: (videoFile.duration / 60).toFixed(1),
+      owner: userId,
     });
     res
       .status(201)
@@ -126,29 +127,35 @@ const updateVideo = asyncHandler(async (req, res) => {
   try {
     const video = await Video.findById(videoId);
     const { title, description } = req.body;
-    const thumbnail = req?.file;
-    if (!title || !description) {
-      throw new ApiError(400, "Please provide all fields");
+    const thumbnail = req.file;
+    if (!title && !description && !thumbnail) {
+      throw new ApiError(400, "Please provide atleast one filed");
     }
     //upload new thumbnail
+    let imgUrl;
     if (thumbnail) {
-      let imageUrl = await uploadOnCloudinary(thumbnail);
+      imgUrl = await uploadOnCloudinary(thumbnail.path);
     }
     //Delete old thumbnail
-    thumbnailToDelete = video.thumbnail;
+    const thumbnailToDelete = video.thumbnail;
+    console.log(thumbnailToDelete);
     thumbnailToDelete ? deleteOnCloudinary(thumbnailToDelete) : null;
-    const updatedVideo = await Video.findOneAndUpdate(videoId, {
-      title,
-      description,
-      thumbnail: imgUrl.secure_url,
-    });
+    const updatedVideo = await Video.findOneAndUpdate(
+      { _id: videoId },
+      {
+        title,
+        description,
+        thumbnail: imgUrl.secure_url,
+      },
+      { new: true }
+    );
     return res
       .status(201)
       .json(new ApiResponse(200, updatedVideo, "Video updated successfully"));
   } catch (error) {
-    throw new ApiError(500, "something went wrong", error.message);
+    throw new ApiError(500, error.message);
   }
-});//done
+}); //done
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -162,7 +169,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     //delete video from cloudinary
     const videoToDelete = await deleteVideoOnCloudinary(video?.videoFile);
     //delete thumbnail from cloudinary
-    console.log(video?.thumbnail)
+    console.log(video?.thumbnail);
     const thumbnailToDelete = await deleteOnCloudinary(video?.thumbnail);
     const result = await Video.findByIdAndDelete(videoId);
     //delete video from owner
