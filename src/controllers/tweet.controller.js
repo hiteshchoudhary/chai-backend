@@ -7,6 +7,7 @@ import {
 import { Tweet } from "../models/tweet.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { isValidObjectId, Types } from "mongoose";
+import { Like } from "../models/like.model.js";
 
 const createTweet = asyncHandler(async (req, res) => {
   const requestBodyValidationResult = CreateTweetSchema.safeParse(req.body);
@@ -171,6 +172,39 @@ const updateTweet = asyncHandler(async (req, res) => {
 
 const deleteTweet = asyncHandler(async (req, res) => {
   //TODO: delete tweet
+  const { tweetId } = req.params;
+  const { _id } = req.user;
+
+  if (!isValidObjectId(tweetId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as tweetId", [
+      "Provide a valid ObjectID as tweetId",
+    ]);
+  }
+
+  const deletedTweet = await Tweet.findOneAndDelete({
+    _id: tweetId,
+    owner: _id,
+  });
+
+  if (!deletedTweet) {
+    throw new ApiError(
+      404,
+      "Either the tweet does not exist or you do not have permissions to perform the give task.",
+      [
+        "Either the tweet does not exist or you do not have permissions to perform the give task.",
+      ]
+    );
+  }
+
+  await Like.deleteMany({
+    tweet: deletedTweet._id.toString(),
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      tweet: deletedTweet,
+    })
+  );
 });
 
 export { createTweet, getUserTweets, updateTweet, deleteTweet };
