@@ -7,22 +7,92 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    query = " ",
+    sortBy,
+    sortType,
+    userId,
+  } = req.query;
   //TODO: get all videos based on query, sort, pagination
 
-  console.log("query ", query, " userId ", userId);
+  // console.log("query ", query, " userId ", userId);
 
   let filter = {};
 
   let options = {
-    page: page,
-    limit: limit,
+    page: isNaN(page) ? 1 : Number(page),
+    limit: isNaN(limit) ? 10 : Number(limit),
+  };
+
+  let aggregateOptions = [
+    {
+      $match: {
+        $and: [
+          {
+            isPublished: true,
+          },
+          {
+            $text: {
+              $search: query,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        score: {
+          $meta: "textScore",
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+      },
+    },
+    {
+      $sort: {
+        score: -1,
+        views: -1,
+      },
+    },
+  ];
+
+  const videos = await Video.aggregatePaginate(aggregateOptions, options);
+
+  if (!videos) {
+    throw new ApiError(500, "something want wrong while get all videos");
   }
-  
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, comments, "get all videos successfully"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, isPublished = true } = req.body;
   // TODO: get video, upload to cloudinary, create video
 
   if (
@@ -75,10 +145,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const video = await Video.create({
     videoFile: { publicId: videoFile.public_id, url: videoFile.url },
     thumbnail: { publicId: thumbnail.public_id, url: thumbnail.url },
-    title,
-    description,
+    title: title,
+    description: description,
     duration: videoFile.duration,
-    isPublished: true,
+    isPublished: isPublished,
     owner: user,
   });
 
@@ -149,10 +219,33 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  if (!videoId) {
-    throw new ApiError(404, "Video not found");
+  if (!videoId || isValidObjectId(videoId)) {
+    throw new ApiError(404, "Video not found ");
   }
+
+  const video = await Video.findById(videoId);
+
+  if (!video) {
+    throw new ApiError(404, "Video not found ");
+  }
+
+  video.isPublished = !video.isPublished;
+
+  await video.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        `Publish status toggled successfully. New status: ${
+          video.isPublished ? "Published" : "Unpublished"
+        }`,
+        video
+      )
+    );
 });
+
 
 export {
   getAllVideos,
