@@ -88,7 +88,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, comments, "get all videos successfully"));
+    .json(new ApiResponse(200, videos, "get all videos successfully"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -143,8 +143,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
   const video = await Video.create({
-    videoFile: { publicId: videoFile.public_id, url: videoFile.url },
-    thumbnail: { publicId: thumbnail.public_id, url: thumbnail.url },
+    videoFile: videoFile.url,
+    thumbnail: thumbnail.url,
     title: title,
     description: description,
     duration: videoFile.duration,
@@ -245,7 +245,6 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
       )
     );
 });
-
 
 export {
   getAllVideos,
