@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { isValidObjectId } from "mongoose";
+import { isValidObjectId, Types } from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 import { addCommentSchema } from "../schema/comment.schema.js";
 import { Comment } from "../models/comment.model.js";
@@ -8,7 +8,92 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { videoId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+  const { page, limit } = req.query;
+
+  const pageNumber = Number(page) ? Number.parseInt(page) : 1;
+  const limitSize = Number(limit) ? Number.parseInt(limit) : 10;
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as videoId", [
+      "Provide a valid ObjectID as videoId",
+    ]);
+  }
+
+  const comments = await Comment.aggregate([
+    {
+      $match: {
+        video: new Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              avatar: 1,
+              username: 1,
+              fullName: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "comment",
+        as: "likedBy",
+        pipeline: [
+          {
+            $project: {
+              likedBy: 1,
+              _id: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: {
+          $first: "$owner",
+        },
+        likes: {
+          $size: "$likedBy",
+        },
+        isLiked: {
+          $cond: {
+            if: {
+              $in: [req.user?._id, "$likedBy.likedBy"],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $unset: ["likedBy"],
+    },
+    {
+      $skip: (pageNumber - 1) * limitSize,
+    },
+    {
+      $limit: limitSize,
+    },
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      comments,
+    })
+  );
 });
 
 const addComment = asyncHandler(async (req, res) => {
