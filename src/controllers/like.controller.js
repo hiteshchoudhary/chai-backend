@@ -6,23 +6,53 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
     const {videoId} = req.params
-    //TODO: toggle like on video
+     if (!videoId) throw new ApiError(404, "Id not found");
+
+     const like = await Like.create({video : videoId, likedBy : req.user})
+     if(!like) throw new ApiError(504, "Couldn't create like");
+
+     res
+     .status(200)
+     .json( new ApiResponse(200, like , "Success"))
 })
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const {commentId} = req.params
-    //TODO: toggle like on comment
+    if (!commentId) throw new ApiError(404, "Id not found");
+
+    const like = await Like.create({comment : commentId, likedBy : req.user})
+    if(!like) throw new ApiError(504, "Couldn't create like");
+
+    res
+    .status(200)
+    .json( new ApiResponse(200, like , "Success"))
 
 })
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
     const {tweetId} = req.params
-    //TODO: toggle like on tweet
+    
+     if (!tweetId) throw new ApiError(404, "Id not found");
+
+     const like = await Like.create({tweet : tweetId, likedBy : req.user})
+     if(!like) throw new ApiError(504, "Couldn't create like");
+
+     res
+     .status(200)
+     .json( new ApiResponse(200, like , "Success"))
 }
 )
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-    //TODO: get all liked videos
+    const { page = 1, limit = 10 } = req.query
+    const parsedLimit = parseInt(limit);
+    const pageSkip = (page - 1) * parsedLimit;
+    const allLikedVideos = await Like.find({video : req.user._id}).skip(pageSkip).limit(parsedLimit);
+    if(!allLikedVideos) throw new ApiError(504, "Couldn't find likes video");
+
+     res
+     .status(200)
+     .json( new ApiResponse(200, allLikedVideos, "Success"))
 })
 
 export {
