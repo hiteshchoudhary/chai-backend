@@ -135,6 +135,49 @@ const addComment = asyncHandler(async (req, res) => {
 
 const updateComment = asyncHandler(async (req, res) => {
   // TODO: update a comment
+  const { commentId } = req.params;
+  const { _id } = req.user;
+
+  if (!isValidObjectId(commentId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as commentId", [
+      "Provide a valid ObjectID as commentId",
+    ]);
+  }
+
+  const requestBodyValidationResult = addCommentSchema.safeParse(req.body);
+
+  if (!requestBodyValidationResult.success) {
+    throw new ApiError(
+      400,
+      requestBodyValidationResult.error.errors[0]?.message,
+      requestBodyValidationResult.error.errors.map((err) => err.message)
+    );
+  }
+
+  const { content } = requestBodyValidationResult.data;
+
+  const updatedComment = await Comment.findOneAndUpdate(
+    {
+      _id: commentId,
+      owner: _id,
+    },
+    {
+      content,
+    },
+    {
+      new: true,
+    }
+  );
+
+  if (!updatedComment) {
+    throw new ApiError(400, "No comment found!!", ["No comment found!!"]);
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      updatedComment,
+    })
+  );
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
