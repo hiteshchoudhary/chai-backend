@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { addCommentSchema } from "../schema/comment.schema.js";
 import { Comment } from "../models/comment.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Like } from "../models/like.model.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
@@ -180,7 +181,39 @@ const updateComment = asyncHandler(async (req, res) => {
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-  // TODO: delete a comment
+  const { commentId } = req.params;
+  const { _id } = req.user;
+
+  if (!isValidObjectId(commentId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as commentId", [
+      "Provide a valid ObjectID as commentId",
+    ]);
+  }
+
+  const deletedComment = await Comment.findOneAndDelete({
+    _id: commentId,
+    owner: _id,
+  });
+
+  if (!deletedComment) {
+    throw new ApiError(
+      404,
+      "Either the comment does not exist or you do not have permissions to perform the give task.",
+      [
+        "Either the comment does not exist or you do not have permissions to perform the give task.",
+      ]
+    );
+  }
+
+  await Like.deleteMany({
+    comment: deletedComment._id.toString(),
+  });
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      deletedComment,
+    })
+  );
 });
 
 export { getVideoComments, addComment, updateComment, deleteComment };
