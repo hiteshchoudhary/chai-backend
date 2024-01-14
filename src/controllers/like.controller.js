@@ -12,6 +12,35 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
   //TODO: toggle like on comment
+
+  const { _id } = req.user;
+
+  if (!isValidObjectId(commentId)) {
+    throw new ApiError(400, "Provide a valid ObjectID as commentId", [
+      "Provide a valid ObjectID as commentId",
+    ]);
+  }
+
+  const deletedLike = await Like.findOneAndDelete({
+    comment: commentId,
+    likedBy: _id,
+  });
+
+  let createdLike;
+
+  if (!deletedLike) {
+    createdLike = await Like.create({
+      comment: commentId,
+      likedBy: _id,
+    });
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, {
+      liked: !!(!deletedLike && createdLike),
+      createdLike,
+    })
+  );
 });
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
