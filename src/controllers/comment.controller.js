@@ -177,7 +177,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     }
     const deletedComment = await Comment.findByIdAndDelete(commentId);
   
-    const likeDelete = await Like.deleteOne({comment: new mongoose.Types.ObjectId(commentId)});
+    const likeDelete = await Like.deleteMany({comment: new mongoose.Types.ObjectId(commentId)});
 
     if (!deletedComment) {
       throw new ApiError(500, "Error while deleting comment!");
