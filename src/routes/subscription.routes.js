@@ -13,7 +13,7 @@ router
     .route("/c/:channelId")
     .get(getSubscribedChannels)
     .post(toggleSubscription);
-
-router.route("/u/:subscriberId").get(getUserChannelSubscribers);
+// in main branch here pass subscriberId this but it;s wrong instead of this channelId is more appropriate
+router.route("/u/:channelId").get(getUserChannelSubscribers);
 
 export default router
