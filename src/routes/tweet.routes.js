@@ -1,17 +1,19 @@
 import { Router } from 'express';
 import {
     createTweet,
-    deleteTweet,
-    getUserTweets,
     updateTweet,
+    deleteTweet,
+    getUserTweets
 } from "../controllers/tweet.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
-const router = Router();
-router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
+const router = Router()
 
-router.route("/").post(createTweet);
-router.route("/user/:userId").get(getUserTweets);
-router.route("/:tweetId").patch(updateTweet).delete(deleteTweet);
+router.use(verifyJWT) // apply middleware to all routes
+
+router.route("/").post(createTweet)
+router.route("/:tweetId").patch(updateTweet).delete(deleteTweet)
+router.route("/:userId").get(getUserTweets)
+
 
 export default router
