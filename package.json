@@ -29,5 +29,13 @@
     "mongoose": "^8.0.0",
     "mongoose-aggregate-paginate-v2": "^1.0.6",
     "multer": "^1.4.5-lts.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silentkiller6092/chai-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/silentkiller6092/chai-backend/issues"
+  },
+  "homepage": "https://github.com/silentkiller6092/chai-backend#readme"
 }
