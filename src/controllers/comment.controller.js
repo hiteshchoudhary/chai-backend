@@ -4,19 +4,18 @@ import { Video } from "../models/video.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { Tweet } from "../models/tweet.model.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { videoId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+  let { page = 1, limit = 10 } = req.query;
 
-  if (!videoId || isValidObjectId(videoId)) {
+  if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
-
   page = isNaN(page) ? 1 : Number(page);
   limit = isNaN(limit) ? 10 : Number(limit);
-
   if (page <= 0) {
     page = 1;
   }
@@ -73,7 +72,7 @@ const addCommentToVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { content } = req.body;
 
-  if (!videoId || isValidObjectId(videoId)) {
+  if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
 
@@ -110,7 +109,7 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
   const { tweetId } = req.params;
   const { content } = req.body;
 
-  if (!tweetId || isValidObjectId(tweetId)) {
+  if (!tweetId || !isValidObjectId(tweetId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
 
@@ -118,7 +117,7 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
     throw new ApiError(401, "content is required or invalid");
   }
 
-  const tweet = await Video.findById(tweetId);
+  const tweet = await Tweet.findById(tweetId);
 
   if (!tweet) {
     throw new ApiError(404, "tweet not found");
@@ -144,14 +143,11 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
 const getTweetComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { tweetId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+  let { page = 1, limit = 10 } = req.query;
 
-  if (!tweetId || isValidObjectId(tweetId)) {
+  if (!tweetId || !isValidObjectId(tweetId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
-
-  page = isNaN(page) ? 1 : Number(page);
-  limit = isNaN(limit) ? 10 : Number(limit);
 
   if (page <= 0) {
     page = 1;
@@ -200,7 +196,7 @@ const getTweetComments = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .json(new ApiResponse(200, tweetComments, "Get video comments success"));
+    .json(new ApiResponse(200, tweetComments, "Get tweet comments success"));
 });
 
 const updateComment = asyncHandler(async (req, res) => {
@@ -209,7 +205,7 @@ const updateComment = asyncHandler(async (req, res) => {
   const { commentId } = req.body;
   const { content } = req.body;
 
-  if (!commentId || isValidObjectId(commentId)) {
+  if (!commentId || !isValidObjectId(commentId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
 
@@ -241,7 +237,7 @@ const deleteComment = asyncHandler(async (req, res) => {
 
   const { commentId } = req.body;
 
-  if (!commentId || isValidObjectId(commentId)) {
+  if (!commentId || !isValidObjectId(commentId)) {
     throw new ApiError(401, "Video ID is required or invalid");
   }
 

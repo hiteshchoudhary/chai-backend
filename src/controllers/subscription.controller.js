@@ -1,5 +1,4 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import { User } from "../models/user.model.js";
 import { Subscription } from "../models/subscription.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -54,7 +53,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 //         )
 //       );
 //   } else {
-//     const unsubscribeChannel = Subscription.findByIdAndDelete({
+//     const unsubscribeChannel = await Subscription.findByIdAndDelete({
 //       subscriber: req.user?._id,
 //       channel: channelId,
 //     });
@@ -92,7 +91,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     throw new ApiError(500, `Invalid id formate ${channelId}`);
   }
 
-  const isSubscribed = await User.findOne({
+  const isSubscribed = await Subscription.findOne({
     $and: [
       { subscriber: new mongoose.Types.ObjectId(req.user?._id) },
       { channel: new mongoose.Types.ObjectId(channelId) },
@@ -101,7 +100,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
   if (!isSubscribed) {
     const subscriber = await Subscription.create({
-      subscriber: new mongoose.Types.ObjectId(req.user._id),
+      subscriber: new mongoose.Types.ObjectId(req.user?._id),
       channel: new mongoose.Types.ObjectId(channelId),
     });
 
@@ -109,12 +108,27 @@ const toggleSubscription = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Something went wrong while toggle subscription");
     }
   } else {
-    new Subscription.findByIdAndDelete(isSubscribed._id);
+    const unsubscribed = await Subscription.findByIdAndDelete(isSubscribed._id);
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          {unsubscribed},
+          "Toggle subscription successfully to unsubscribed "
+        )
+      );
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Toggle subscription successfully "));
+    .json(
+      new ApiResponse(
+        200,
+        {},
+        "Toggle subscription successfully to subscribed "
+      )
+    );
 });
 
 // controller to return subscriber list of a channel
@@ -180,7 +194,13 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, subscribers, "get subscribers successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        subscribers,
+        "get subscribers list to channel successfully"
+      )
+    );
 });
 
 // controller to return channel list to which user has subscribed
@@ -252,7 +272,13 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, subscribed, "get subscribers successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        subscribed,
+        "get channels list subscriber successfully"
+      )
+    );
 });
 
 export { toggleSubscription, getUserChannelSubscribers, getSubscribedChannels };

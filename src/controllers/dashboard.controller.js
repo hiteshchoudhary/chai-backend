@@ -31,11 +31,11 @@ const getChannelStats = asyncHandler(async (req, res) => {
               likesCount: { $size: "$likes" },
             },
           },
-          {
-            $project: {
-              likes: 0,
-            },
-          },
+          // {
+          //   $project: {
+          //     likes: 0,
+          //   },
+          // },
         ],
       },
     },
@@ -50,7 +50,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     {
       $addFields: {
         totalSubscribers: { $size: "$subscribers" },
-        totalVideos: { $size: "allVideos" },
+        totalVideos: { $size: "$allVideos" },
         totalViews: { $sum: "$allVideos.views" },
         totalLikes: { $sum: "$allVideos.likesCount" },
       },
@@ -89,11 +89,29 @@ const getChannelVideos = asyncHandler(async (req, res) => {
         owner: new mongoose.Types.ObjectId(req.user?._id),
       },
     },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+      },
+    },
+    {
+      $project: {
+        likes: 0
+      }
+    },
   ]);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, videos, "get all videos successfully"));
+    .json(new ApiResponse(200, videos, "get all videos of channel successfully"));
 });
 
 export { getChannelStats, getChannelVideos };

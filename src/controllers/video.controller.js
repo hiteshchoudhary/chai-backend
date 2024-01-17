@@ -133,7 +133,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const videoFile = await uploadOnCloudinary(videoLocalPath);
   const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);
 
-  console.log("Uploaded video file ", videoFile);
+  // console.log("Uploaded video file ", videoFile);
 
   const user = await User.findById(req.user?._id).select(
     "-password -refreshToken"
@@ -149,7 +149,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     description: description,
     duration: videoFile.duration,
     isPublished: isPublished,
-    owner: user,
+    owner: user._id,
   });
 
   return res
@@ -165,11 +165,35 @@ const getVideoById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Video not found");
   }
 
-  if (isValidObjectId(videoId)) {
+  if (!isValidObjectId(videoId)) {
     throw new ApiError(404, "Video id is not correct");
   }
 
-  const video = await Video.findById(videoId);
+  const video = await Video.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+      },
+    },
+    {
+      $project: {
+        likes: 0
+      }
+    },
+  ]);
 
   return res
     .status(200)
@@ -219,7 +243,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  if (!videoId || isValidObjectId(videoId)) {
+  if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(404, "Video not found ");
   }
 

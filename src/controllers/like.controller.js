@@ -14,24 +14,24 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   if (!isValidObjectId(videoId)) throw new ApiError("Video not found");
 
   const isLiked = await Like.findOne({
-    isLiked: new mongoose.Types.ObjectId(userId),
-    video: new mongoose.Types.ObjectId(userId),
+    likedBy: new mongoose.Types.ObjectId(userId),
+    video: new mongoose.Types.ObjectId(videoId),
   });
 
   if (!isLiked) {
     await Like.create({
-      isLiked: userId,
+      likedBy: userId,
       video: videoId,
     });
   } else {
-    await Like.deleteOne(isLiked);
+    await Like.findByIdAndDelete(isLiked._id);
     return res
       .status(200)
       .json(new ApiResponse(200, {}, "Video unlike successfully"));
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Video Liked Fetching Successfully"));
+    .json(new ApiResponse(200, {}, "Video Liked Successfully"));
 });
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
@@ -130,6 +130,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     {
       $project: {
         _id: "$AllVideos._id",
+        owner : "$AllVideos.owner",
         title: "$AllVideos.title",
         videoFile: "$AllVideos.videoFile",
         createdAt: "$AllVideos.createdAt",
