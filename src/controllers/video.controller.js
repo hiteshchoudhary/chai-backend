@@ -9,10 +9,11 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 
 const isUserOwner = async(videoId,req)=>{
     const video = await Video.findById(videoId);
-
-    if(video?.owner !== req.user?._id){
+    
+    if(video?.owner.toString() !== req.user?._id.toString()){
         return false;
     }
+    
     return true;
     
 }
@@ -34,11 +35,11 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
     const videolocalpath = req.files?.videoFile[0]?.path;
     const thumbnaillocalpath = req.files?.thumbnail[0]?.path;
-
-    if(videolocalpath){
+    // console.log(videolocalpath);
+    if(!videolocalpath){
         throw new ApiError(404,"Video is required!!!")
     }
-    if(thumbnaillocalpath){
+    if(!thumbnaillocalpath){
         throw new ApiError(404,"Thumbnail is required!!!")
     }
     //cloud 
@@ -86,16 +87,19 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-
     if(!videoId){
         throw new ApiError(404,"videoId is required !!!")
     }
-    if(!isUserOwner(videoId,req)){
-        throw new ApiError(300,"Unauthorized Access")
+    const video = await Video.findById(videoId);
+   
+    if(!video){
+        throw new ApiError(404,"Video doesnt exist")
     }
+    const authorized = await isUserOwner(videoId,req)
 
-    //TODO: update video details like title, description, thumbnail
-    //retreiving 
+    if(!authorized){
+        throw new ApiError(300,"Unauthorized Access")
+    } 
     const {title,description} = req.body;
     if(!title || !description){
         throw new ApiError(404,"Title or Description is required!!!")
@@ -103,7 +107,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     const thumbnaillocalpath = req.file?.path;
    
     const thumbnail = await uploadOnCloudinary(thumbnaillocalpath);
-    if(!thumbnail){
+    if(!thumbnail?.url){
      throw new ApiError(400,"Something went wrong while updating the thumbnail")
     }
 
@@ -112,7 +116,7 @@ const updateVideo = asyncHandler(async (req, res) => {
             $set:{
                 title:title,
                 description:description,
-                thumbnail:thumbnail
+                thumbnail:thumbnail?.url
             }
         },{
             new:true
@@ -134,13 +138,18 @@ const deleteVideo = asyncHandler(async (req, res) => {
     if(!videoId){
         throw new ApiError(404,"videoId is required !!!")
     }
-    if(!isUserOwner(videoId,req)){
-        throw new ApiError(300,"Unauthorized Access")
+    const video = await Video.findById(videoId);
+    if(!video){
+        throw new ApiError(404,"Video doesnt exist")
     }
-
+    const authorized = await isUserOwner(videoId,req)
+    if(!authorized){
+        throw new ApiError(300,"Unauthorized Access")
+    } 
+    
     const videoDeleted = await Video.findByIdAndDelete(videoId);
     
-    if(videoDeleted){
+    if(videoDeleted ){
         throw new ApiError(400,"Something error happened while deleting the video")
     }
 
@@ -156,17 +165,19 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     if(!videoId){
         throw new ApiError(404,"videoId is required !!!")
     }
-
-    if(!isUserOwner(videoId,req)){
-        throw new ApiError(300,"Unauthorized Access")
+    const video = await Video.findById(videoId);
+    if (!video) {
+        throw new ApiError(404, "Video not found");
     }
+    const authorized = await isUserOwner(videoId,req)
+    if(!authorized){
+        throw new ApiError(300,"Unauthorized Access")
+    } 
 
     const updatedVideo = await Video.findByIdAndUpdate(videoId,
         {
             $set:{
-                isPublished :{
-                    $not:"$isPublished"
-                }
+                isPublished : !video.isPublished
 
             }
         },

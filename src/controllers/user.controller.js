@@ -46,6 +46,7 @@ const registerUser = asyncHandler( async (req, res) => {
     }
     
     const avatarLocalPath = req.files?.avatar[0]?.path;
+    
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     let coverImageLocalPath;
@@ -78,7 +79,7 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Avatar file is required")
     }
    
-   console.log(avatar)
+   
     const user = await User.create({
         fullName,
         avatar: avatar.url,
@@ -111,7 +112,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     //send cookie
 
     const {email, username, password} = req.body
-    console.log(email);
+   
 
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")
