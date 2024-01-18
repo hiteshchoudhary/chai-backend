@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
-  const {
+  let {
     page = 1,
     limit = 10,
     query = " ",
@@ -18,36 +18,63 @@ const getAllVideos = asyncHandler(async (req, res) => {
   //TODO: get all videos based on query, sort, pagination
 
   // console.log("query ", query, " userId ", userId);
+  page = isNaN(page) ? 1 : Number(page);
+  limit = isNaN(page) ? 10 : Number(limit);
 
-  let filter = {};
+  //because 0 is not acceptable ein skip and limit in aggregate pipeline
+  if (page < 0) {
+    page = 1;
+  }
+  if (limit <= 0) {
+    limit = 10;
+  }
 
-  let options = {
-    page: isNaN(page) ? 1 : Number(page),
-    limit: isNaN(limit) ? 10 : Number(limit),
-  };
-
-  let aggregateOptions = [
-    {
-      $match: {
-        $and: [
-          {
-            isPublished: true,
-          },
-          {
-            $text: {
-              $search: query,
-            },
-          },
-        ],
-      },
-    },
-    {
-      $addFields: {
-        score: {
-          $meta: "textScore",
+  const matchStage = {};
+  
+  if (userId && isValidObjectId(userId)) {
+    matchStage["$match"] = {
+      owner: new mongoose.Types.ObjectId(userId),
+    };
+  } else if (query) {
+    matchStage["$match"] = {
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+      ],
+    };
+  } else {
+    matchStage["$match"] = {};
+  }
+  if (userId && query) {
+    matchStage["$match"] = {
+      $and: [
+        { owner: new mongoose.Types.ObjectId(userId) },
+        {
+          $or: [
+            { title: { $regex: query, $options: "i" } },
+            { description: { $regex: query, $options: "i" } },
+          ],
         },
-      },
-    },
+      ],
+    };
+  }
+
+  const sortStage = {};
+  if (sortBy && sortType) {
+    sortStage["$sort"] = {
+      [sortBy]: sortType === "asc" ? 1 : -1,
+    };
+  } else {
+    sortStage["$sort"] = {
+      createdAt: -1,
+    };
+  }
+
+  // const skipStage = { $skip: (page - 1) * limit };
+  // const limitStage = { $limit: limit };
+
+  const videos = await Video.aggregate([
+    matchStage,
     {
       $lookup: {
         from: "users",
@@ -57,8 +84,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
         pipeline: [
           {
             $project: {
-              username: 1,
               fullName: 1,
+              username: 1,
               avatar: 1,
             },
           },
@@ -66,21 +93,31 @@ const getAllVideos = asyncHandler(async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+    sortStage,
+    {
+      $skip: (page - 1) * limit,
+    },
+    {
+      $limit: limit,
+    },
+    {
       $addFields: {
         owner: {
           $first: "$owner",
         },
+        likes: {
+          $size: "$likes",
+        },
       },
     },
-    {
-      $sort: {
-        score: -1,
-        views: -1,
-      },
-    },
-  ];
-
-  const videos = await Video.aggregatePaginate(aggregateOptions, options);
+  ]);
 
   if (!videos) {
     throw new ApiError(500, "something want wrong while get all videos");
@@ -190,8 +227,8 @@ const getVideoById = asyncHandler(async (req, res) => {
     },
     {
       $project: {
-        likes: 0
-      }
+        likes: 0,
+      },
     },
   ]);
 
