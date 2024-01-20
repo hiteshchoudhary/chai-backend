@@ -149,7 +149,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     
     const videoDeleted = await Video.findByIdAndDelete(videoId);
     
-    if(videoDeleted ){
+    if(!videoDeleted ){
         throw new ApiError(400,"Something error happened while deleting the video")
     }
 
