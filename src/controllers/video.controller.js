@@ -181,10 +181,23 @@ const deleteVideo = asyncHandler(async (req, res) => {
 const togglePublishStatus = asyncHandler(async (req, res) => {
   try {
     const { videoId } = req.params;
-    const toggel = await Video.findOneAndUpdate({ _id: videoId }, [
-      { $set: { isPublished: { $not: "$isPublished" } } },
-    ]);
-    return res.status(200).json(new ApiResponse(200, { toggel }, "Updated"));
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      return res
+        .status(404)
+        .json(new ApiResponse(404, null, "Video not found"));
+    }
+
+    const newPublishStatus = !video.isPublished;
+
+    const toggle = await Video.findOneAndUpdate(
+      { _id: videoId },
+      { $set: { isPublished: newPublishStatus } },
+      { new: true }
+    );
+
+    return res.status(200).json(new ApiResponse(200, { toggle }, "Updated"));
   } catch (e) {
     throw new ApiError(400, e.message || "Unable to update video");
   }
