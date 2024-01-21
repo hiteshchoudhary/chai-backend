@@ -194,7 +194,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     const toggle = await Video.findOneAndUpdate(
       { _id: videoId },
       { $set: { isPublished: newPublishStatus } },
-      { new: true }
+      { new: true } // Update this code in commit 32
     );
 
     return res.status(200).json(new ApiResponse(200, { toggle }, "Updated"));
