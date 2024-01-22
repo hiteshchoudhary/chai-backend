@@ -68,20 +68,37 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
                     owner:user?._id
     
                 }
-            },{
-                $lookup:{
-                    from:"videos",
-                    localField:"videos",
-                    foreignField:"_id",
-                    as:"videos"
+            },
+            {
+                $project:{
+                   _id : 1,
+                   name:1,
+                   description:1,
+                   owner:1,
+                   createdAt:1,
+                   updatedAt:1,
+                   videos:{
+                    $cond:{
+                        if:{$eq:["$owner",new mongoose.Types.ObjectId(req?.user?._id)]},
+                        then:"$videos",
+                        else:{
+                            $filter:{
+                                input:"$videos",
+                                as:"video",
+                                cond:{
+                                    $eq:["$video.isPublished",true ]
+                                }
+
+                            }
+                        }
+
+                    }
+                   }
                 }
-            },{
-                $match:{
-                    "videos.isPublished" : true
-                }
+
             }
         ])
-        if(!playlist || playlist.length === 0){
+        if(!playlist ){
             throw new ApiError(404,"There is no Playlist made by this user")
         }
     
@@ -163,7 +180,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         }
         const video = await Video.findById(videoId);
         //if the video is not published but video owner and current user is same then owner can add to playlist only
-        if(!video || ( !(video.owner === req.user?._id)  && !video?.isPublished) ){
+        if(!video || ( !(video.owner.toString() === req.user?._id.toString())  && !video?.isPublished) ){
             throw new ApiError(404,"Video Not Found");
         }
         //check if the video is already added to playlist or not
@@ -208,6 +225,13 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
         if(!video   ){
             throw new ApiError(404,"Video Not found");
         }
+        
+        //check video is added in playlist or not
+        const playlist = await Playlist.findById(playlistId);
+        if(!playlist.videos.includes(videoId)){
+            throw new ApiError(404,"No Video Found in Playlist");
+        } 
+        //video is not published 
         if( !video?.isPublished){
             const removedVideoFromPlaylist = await Playlist.updateOne({
                 _id : new mongoose.Types.ObjectId(playlistId)
@@ -222,11 +246,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200,{},"Video Not found in the playlist"))
 
         }
-        //check video is added in playlist or not
-        const playlist = await Playlist.findById(playlistId);
-        if(!playlist.videos.includes(videoId)){
-            throw new ApiError(404,"No Video Found in Playlist");
-        } 
         const removedVideoFromPlaylist = await Playlist.updateOne({
             _id : new mongoose.Types.ObjectId(playlistId)
         },{

@@ -77,7 +77,8 @@ const getVideoById = asyncHandler(async (req, res) => {
     }
     const video = await Video.findById(videoId)
     
-    if( !video || ( !video?.isPublished &&  !(video?.owner === req.user?._id) ) ){
+    
+    if( !video || ( !video?.isPublished &&  !(video?.owner.toString() === req.user?._id.toString()) ) ){
         throw new ApiError(404,"Video not found")
     }
     return res
