@@ -1,17 +1,26 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
-    addComment,
-    deleteComment,
+    addCommentToVideo,
+    addCommentToTweet,
+    updateCommentToVideo,
+    updateCommentToTweet,
+    deleteCommentToVideo,
+    deleteCommentToTweet,
     getVideoComments,
-    updateComment,
-} from "../controllers/comment.controller.js"
-import {verifyJWT} from "../middlewares/auth.middleware.js"
+    getTweetComments
+} from '../controllers/comment.controller.js'
 
-const router = Router();
+import { verifyJWT } from '../middlewares/auth.middleware.js'
 
-router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
-router.route("/:videoId").get(getVideoComments).post(addComment);
-router.route("/c/:commentId").delete(deleteComment).patch(updateComment);
+const router = Router()
+
+router.use(verifyJWT); // apply in all
+
+router.route("/video/:videoId").get(getVideoComments).post(addCommentToVideo);
+router.route("/tweet/:tweetId").get(getTweetComments).post(addCommentToTweet);
+
+router.route("/video/c/:commentId").delete(deleteCommentToVideo).patch(updateCommentToVideo);
+router.route("/tweet/c/:commentId").delete(deleteCommentToTweet).patch(updateCommentToTweet);
 
 export default router
