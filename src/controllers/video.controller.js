@@ -5,7 +5,9 @@ import ApiError from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
-
+import {Comment} from "../models/comment.model.js"
+import {Like} from "../models/like.model.js"
+import {Playlist} from "../models/playlist.model.js"
 
 const isUserOwner = async(videoId,req)=>{
     const video = await Video.findById(videoId);
@@ -149,6 +151,23 @@ const deleteVideo = asyncHandler(async (req, res) => {
     } 
     
     const videoDeleted = await Video.findByIdAndDelete(videoId);
+    //if there is no video , so no relevancy to store like , comment related to that video
+    //like and comment
+    await Comment.deleteMany({video:videoId})
+    await Like.deleteMany({video:videoId})
+    //removing the video id if it exists in any playlist
+    const playlists = await Playlist.find({videos:videoId})
+    for(const playlist of playlists){
+        await Playlist.findByIdAndUpdate(
+            playlist._id,
+            {
+                $pull:{videos:videoId}
+            },
+            {
+                new:true
+            }
+        )
+    }
     
     if(!videoDeleted ){
         throw new ApiError(400,"Something error happened while deleting the video")

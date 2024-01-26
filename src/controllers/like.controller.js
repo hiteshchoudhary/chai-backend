@@ -14,7 +14,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     }
    try {
      const video = await Video.findById(videoId);
-     if(!video){
+     if(!video || ( video.owner.toString() !== req.user?._id.toString() && !video.isPublished) ){
          throw new ApiError(404,"Video Not found")
      }
      const likecriteria = {video:videoId,likedBy:req.user?._id};
@@ -42,7 +42,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
 
 })
-
+//TODO:-if video is not published
 const toggleCommentLike = asyncHandler(async (req, res) => {
     const {commentId} = req.params
     //TODO: toggle like on comment
@@ -136,6 +136,11 @@ const getLikedVideos = asyncHandler(async (req, res) => {
             },
             {
                 $unwind: "$likedVideos"
+            },
+            {
+               $match:{
+                   "likedVideos.isPublished" : true
+               }
             },
             {
                 $lookup: {
