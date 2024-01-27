@@ -1,10 +1,13 @@
-# chai aur backend  series 
+# Youtube Backend In Nodejs 
 
-This is a video series on backend with javascript
+ASSIGNMENT DONE FULLY WORKING  WITH ALL POSSIBLE EDGE CASES !!!!
+
 - [Model link](https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj?origin=share)
 
+Hitesh Sir's video
 - [Video playlist](https://www.youtube.com/watch?v=EH3vGeqeIAo&list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW)
 
+-[OG Goat](https://www.youtube.com/@chaiaurcode)
 ---
 # Summary of this project
 
@@ -13,12 +16,5 @@ We are building a complete video hosting website similar to youtube with all the
 
 Project uses all standard practices like JWT, bcrypt, access tokens, refresh Tokens and many more. We have spent a lot of time in building this project and we are sure that you will learn a lot from this project.
 
----
-Top Contributer to complete all TODOs
-
-1. Spiderman (just sample)  [Link to Repo](https://www.youtube.com/@chaiaurcode)
-
 --- 
-## How to contribute in this open source Project
-
-First, please understand that this is not your regular project to merge your PR. This repo requires you to finish all assignments that are in controller folder. We don't accept half work, please finish all controllers and then reach us out on [Discord](https://hitesh.ai/discord) or [Twitter](https://twitter.com/@hiteshdotcom) and after checking your repo, I will add link to your repo in this readme.
+# Getting Started
