@@ -54,7 +54,11 @@ const registerUser = asyncHandler( async (req, res) => {
     }
     //console.log(req.files);
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    // req.files?.avatar[0] can cause errors as req.file?.avatar give undefined if not present and undefined[0] will throw error so fixed it
+    const isAvatarPresent = req.files?.avatar;
+    if (!isAvatarPresent) {
+        throw new ApiError(409, "Avatar file is required")
+    }
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     let coverImageLocalPath;
