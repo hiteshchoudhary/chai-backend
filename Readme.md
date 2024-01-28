@@ -7,7 +7,7 @@ ASSIGNMENT DONE FULLY WORKING  WITH ALL POSSIBLE EDGE CASES !!!!
 Hitesh Sir's video
 - [Video playlist](https://www.youtube.com/watch?v=EH3vGeqeIAo&list=PLu71SKxNbfoBGh_8p_NS-ZAh6v7HhYqHW)
 
--[OG Goat](https://www.youtube.com/@chaiaurcode)
+  [OG Goat](https://www.youtube.com/@chaiaurcode)
 ---
 # Summary of this project
 
@@ -17,4 +17,4 @@ We are building a complete video hosting website similar to youtube with all the
 Project uses all standard practices like JWT, bcrypt, access tokens, refresh Tokens and many more. We have spent a lot of time in building this project and we are sure that you will learn a lot from this project.
 
 --- 
-# Getting Started
+

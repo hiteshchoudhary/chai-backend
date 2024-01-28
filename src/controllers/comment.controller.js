@@ -18,38 +18,69 @@ const getVideoComments = asyncHandler(async (req, res) => {
          await Comment.deleteMany({ video: videoId });
          throw new ApiError(400, "There is no such Video. All associated comments have been deleted.");
     }
-    const comments = await Comment.aggregate([
+    const commentsAggregate = Comment.aggregate([
         {
-            $match:{
-                video:new mongoose.Types.ObjectId(videoId)
-            }
-
+            $match: {
+                video: new mongoose.Types.ObjectId(videoId),
+            },
         },
         {
-            $skip:(Number(page)-1)*limit
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+            },
         },
         {
-            $limit: Number(limit)
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "comment",
+                as: "likes",
+            },
         },
         {
-            $lookup:{
-                from:"users",
-                localField:"owner",
-                foreignField:"_id",
-                pipeline:[
-                    {
-                        $project:{
-                            username:1,
-                            fullName:1,
-                            avatar:1
-                        }
+            $addFields: {
+                likesCount: {
+                    $size: "$likes",
+                },
+                owner: {
+                    $first: "$owner",
+                },
+                isLiked: {
+                    $cond: {
+                        if: {$in: [req.user?._id, "$likes.likedBy"]},
+                        then: true,
+                        else: false
                     }
-                ],
-                as:"owner"
-            }
+                }
+            },
         },
-      
-    ])
+        {
+            $project: {
+                content: 1,
+                createdAt: 1,
+                likesCount: 1,
+                owner: {
+                    username: 1,
+                    fullName: 1,
+                    "avatar.url": 1,
+                },
+                isLiked: 1
+            },
+        },
+    ]);
+
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+    };
+    const comments = await Comment.aggregatePaginate(
+        commentsAggregate,
+        options
+    );
+
     if(!comments || comments.length === 0){
         return res
         .status(200)
