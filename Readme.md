@@ -38,7 +38,7 @@ $npm -v
 ```
 $nodemon -v
 ```
-- install all the packages
+- install all the node_modules
 ```
 $npm install
 ```
