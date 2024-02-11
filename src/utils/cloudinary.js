@@ -8,6 +8,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
+const deletefile = async(public_id)=>{
+    await cloudinary.api.delete_resources(public_id, 
+    { type: 'upload', resource_type: 'auto' })
+  
+}
+
 const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null
