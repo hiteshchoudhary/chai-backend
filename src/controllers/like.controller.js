@@ -61,7 +61,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
             throw new ApiError(404, "Comment not found")
         }
 
-        const like = await Like.findOne({ comment: commentId, likedBy: videoId });
+        const like = await Like.findOne({ comment: commentId, likedBy: userId });
 
         // user has liked the comment => dislike comment
         if (like) {
@@ -104,7 +104,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
             throw new ApiError(404, "Tweet not found")
         }
 
-        const like = await Like.findOne({ tweet: tweetId, likedBy: videoId });
+        const like = await Like.findOne({ tweet: tweetId, likedBy: userId });
 
         // user has liked the tweet => dislike tweet
         if (like) {
@@ -140,7 +140,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     const userId = req.user.id
 
     try {
-        const likedVideos = await Like.find({ likedBy: userId })
+        const likedVideos = await Like.find({video: { $ne: null }, likedBy: userId })
             .populate("video", "_id title description owner views")
 
         res.status(200).json(
