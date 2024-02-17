@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "c5c46b79-ec8a-45f8-bc06-bd507e1da575",
+		"name": "CHAI-BACKEND",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18662439",
+		"_collection_link": "https://speeding-crater-521903.postman.co/workspace/Team-Workspace~48ed04c6-b44f-4a3f-8fd6-8bfc3d562916/collection/18662439-c5c46b79-ec8a-45f8-bc06-bd507e1da575?action=share&source=collection_link&creator=18662439"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/mac163/Desktop/Screenshot 2024-02-17 at 1.06.24 PM.png"
+								},
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/Users/mac163/Desktop/Screenshot 2024-02-17 at 1.06.38 PM.png"
+								},
+								{
+									"key": "fullName",
+									"value": "Sachin Kumar",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "sachinpal8050101@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "sachin8050101",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}register",
+							"host": [
+								"{{base_url}}{{user}}register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sachinpal8050101@gmail.com\",\n    \"password\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}login",
+							"host": [
+								"{{base_url}}{{user}}login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}logout",
+							"host": [
+								"{{base_url}}{{user}}logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current-user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}current-user",
+							"host": [
+								"{{base_url}}{{user}}current-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}history",
+							"host": [
+								"{{base_url}}{{user}}history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"sachinpal8050101@gmail.com\",\n    \"fullName\": \"Sachin K\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}update-account",
+							"host": [
+								"{{base_url}}{{user}}update-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/Users/mac163/Desktop/Screenshot 2024-02-17 at 1.06.24 PM.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}avatar",
+							"host": [
+								"{{base_url}}{{user}}avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cover-image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gS3VtYXIiLCJpYXQiOjE3MDgxNTYxODYsImV4cCI6MTcwODI0MjU4Nn0.vMulv9hmpicf-KOIx3auxzdm9I2qtPHNNSXY2cCxBYA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/Users/mac163/Desktop/Screenshot 2024-02-17 at 1.06.38 PM.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}{{user}}cover-image",
+							"host": [
+								"{{base_url}}{{user}}cover-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "c/:username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}{{user}}c/sachin8050101",
+							"host": [
+								"{{base_url}}{{user}}c"
+							],
+							"path": [
+								"sachin8050101"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWQwNjNiOTdmNjg2NDE1YTU5N2Q0YzIiLCJlbWFpbCI6InNhY2hpbnBhbDgwNTAxMDFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJzYWNoaW44MDUwMTAxIiwiZnVsbE5hbWUiOiJTYWNoaW4gSyIsImlhdCI6MTcwODE1NjY1NCwiZXhwIjoxNzA4MjQzMDU0fQ.KI10ezTWF3bFUfQ5zmiI88xcBl3QS3mNE3QLv8loYDo",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://192.168.3.00:8000/",
+			"type": "string"
+		},
+		{
+			"key": "user",
+			"value": "api/v1/users/",
+			"type": "string"
+		}
+	]
+}
