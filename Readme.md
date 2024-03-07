@@ -1,3 +1,6 @@
+#my postman collection api lnk:
+api: https://api.postman.com/collections/32891760-b669121e-0ecf-44b1-8a1e-94b3efe4df3c?access_key=PMAT-01HRBB6VJQWGGJKA12WNH35RP7
+
 # chai aur backend  series 
 
 This is a video series on backend with javascript
