@@ -295,6 +295,12 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
 
     //TODO: delete old image - assignment
 
+     const publicId = req.User?.avatar?.split('/').pop()?.split('.')[0]
+
+      if (publicId) {
+        await deleteFromCloudinary(publicId)
+      }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
     if (!avatar.url) {
@@ -327,6 +333,11 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     }
 
     //TODO: delete old image - assignment
+     const publicId = req.User?.coverImage?.split('/').pop()?.split('.')[0]
+
+      if (publicId) {
+        await deleteFromCloudinary(publicId)
+      }
 
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
