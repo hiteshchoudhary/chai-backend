@@ -95,7 +95,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findById(subscriberId);
-    if (!channel) {
+    if (!user) {
         throw new ApiError(404, "Channel does not exits");
     }
 
