@@ -143,31 +143,33 @@ const getLikedVideos = asyncHandler(async (req, res) => {
   //TODO: get all liked videos
   const aggregate = [
     {
-        $match: {
-            likedBy: req.user?._id
-        },
-        $lookup: {
-            from: "Video",
-            localField: "video",
-            foreignField: "_id",
-            as: "likedVideos"
-        },
-        $unwind: {
-            path: "$likedVideos",
-            includeArrayIndex: 0
-        },
-        $project: {
-            likedVideo: 1
-        }
+      $match: {
+        likedBy: new mongoose.Types.ObjectId(req.user?._id)
+      }
+    }, {
+      $lookup: {
+        from: "Video",
+        localField: "video",
+        foreignField: "_id",
+        as: "likedVideos"
+      }
+    }, {
+      $unwind: {
+        path: "$likedVideos",
+      }
+    }, {
+      $project: {
+        likedVideo: 1
+      }
     }
   ]
 
   const likedVideo = await Like.aggregate(aggregate)
 
-  if(!likedVideo){
+  if (!likedVideo) {
     throw new ApiError(400, "Liked Video not founded")
   }
-  
+  console.log(likedVideo);
   res.status(200).json(
     new ApiResponse(200, likedVideo, "Successfully got the like video list")
   )
@@ -175,45 +177,45 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 });
 
 const getTotalLikeOfVideo = asyncHandler(async (req, res) => {
-    //TODO: get total like of a videos
-    try {
-      const { videoId } = req.params;
-  
-      if (!isValidObjectId(videoId)) {
-        throw new ApiError(400, "video id is not valid");
-      }
-  
-      const video = await Video.findById(videoId);
-  
-      if (!video) {
-        throw new ApiError(404, "Video not found ");
-      }
-  
-      const aggregate = [
-        {
-          $match: {
-            video: videoId,
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalLikes: { $sum: 1 },
-          },
-        },
-      ];
-  
-      const likes = await Like.aggregate(aggregate);
-  
-      if (!likes) {
-        throw new ApiError(400, "Like list not founded");
-      }
-  
-      res
-        .status(200)
-        .json(new ApiResponse(200, likes, "Successfully got the like list"));
-    } catch (error) {
-      throw new ApiError(400, "something went wrong", error);
+  //TODO: get total like of a videos
+  try {
+    const { videoId } = req.params;
+
+    if (!isValidObjectId(videoId)) {
+      throw new ApiError(400, "video id is not valid");
     }
-  });
+
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      throw new ApiError(404, "Video not found ");
+    }
+
+    const aggregate = [
+      {
+        $match: {
+          video: videoId,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalLikes: { $sum: 1 },
+        },
+      },
+    ];
+
+    const likes = await Like.aggregate(aggregate);
+
+    if (!likes) {
+      throw new ApiError(400, "Like list not founded");
+    }
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, likes, "Successfully got the like list"));
+  } catch (error) {
+    throw new ApiError(400, "something went wrong", error);
+  }
+});
 export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos, getTotalLikeOfVideo };

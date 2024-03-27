@@ -19,31 +19,42 @@ const getAllVideos = asyncHandler(async (req, res) => {
     sortingVideo["createdAt"] = -1;
   }
 
-  if (!userId) {
+  const pipeline = [];
+  // console.log(userId, req.user?._id);
+
+  if (!userId || !isValidObjectId(userId)) {
     throw new ApiError(404, "userId not found");
   }
 
-  const aggregation = [
-    {
-      $match: {
-        owner: userId,
-      },
-    },
-    query && {
-      $match: query,
-    },
-    {
-      $sort: sortingVideo,
-    },
-    {
-      $skip: skipedVideos,
-    },
-    {
-      $limit: limit,
-    },
-  ];
+  pipeline.push({
+    $match: {
+      owner: new mongoose.Types.ObjectId(userId)
+    }
+  })
 
-  const videoList = await Video.aggregate(aggregation);
+  if (query) {
+    pipeline.push({
+      $match: {
+        $text: {
+          $search: query
+        }
+      }
+    })
+  }
+  if (sortingVideo) {
+    pipeline.push({
+      $sort: sortingVideo,
+    })
+  }
+  pipeline.push({
+    $skip: skipedVideos,
+  })
+  pipeline.push({
+    $limit: limit,
+  })
+
+  const videoList = await Video.aggregate(pipeline);
+
 
   res
     .status(200)
@@ -102,11 +113,15 @@ const getVideoById = asyncHandler(async (req, res) => {
     new ApiError(404, "Not Found Video Id");
   }
 
-  const video = await Video.findById({ videoId });
+  const video = await Video.findById(videoId);
 
-  if (!(video && video.isPublished)) {
-    throw new ApiError(400, "Something wrong");
+  // console.log(video);
+  if (!video) {
+    res
+      .status(200)
+      .json(new ApiResponse(200, video, "No video founded"));
   }
+
 
   return res
     .status(200)
@@ -116,10 +131,15 @@ const getVideoById = asyncHandler(async (req, res) => {
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   //TODO: update video details like title, description, thumbnail
-
+  // console.log(videoId);
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Video Id is not valid")
+  }
   const video = await Video.findById(videoId);
+  // console.log(toString(video.owner), toString(req.user?._id));
 
-  if (!(video && videoowner === req.user._id)) {
+
+  if (!video && !toString(video.owner) == toString(req.user?._id)) {
     throw new ApiError(400, "video not founded");
   }
 
@@ -142,7 +162,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     title,
     description,
     thumbnail: thumbnail?.url,
-  });
+  }, { new: true });
 
   return res
     .status(200)
@@ -156,20 +176,20 @@ const deleteVideo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Video Id not founded");
   }
 
-  const video = await Video.findById(videoId);
-  if (!video && video.owner === req?.user._id) {
+  const video = await Video.findById(videoId, { new: true });
+  if (!video || !toString(video.owner) === toString(req?.user._id)) {
     throw new ApiError(400, "Video not founded");
   }
-  await Video.findByIdAndDelete(videoId, (err, del) => {
-    if (err) {
-      console.log("Founded an Error in deleting a video : ", +err);
-      throw new ApiError(400, "Video Not Deleted Successfully");
-    }
-  });
+  const deleteVideo = await Video.findByIdAndDelete(videoId);
+  console.log(deleteVideo);
+  if (!deleteVideo) {
+    throw new ApiError(400, "Video not deleted");
+  }
+
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "Successfully deleted the video"));
+    .json(new ApiResponse(200, deleteVideo, "Successfully deleted the video"));
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
@@ -180,8 +200,8 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
   }
 
   const video = await Video.findById(videoId);
-
-  if (!(video && video.owner === req.user?._id)) {
+  console.log(video);
+  if (!(video && toString(video.owner) === toString(req.user?._id))) {
     throw new ApiError(400, "Video not founded");
   }
   const isPublished = !video.isPublished;
@@ -194,13 +214,13 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     { new: true }
   );
 
-  if(!toggleIsPublished){
+  if (!toggleIsPublished) {
     throw new ApiError(400, "Something went wrong to toggle the publish state");
   }
 
 
   return res.status(200).json(
-    new ApiResponse(200,toggleIsPublished, "Updated toggle state successfully")
+    new ApiResponse(200, toggleIsPublished, "Updated toggle state successfully")
   )
 
 });

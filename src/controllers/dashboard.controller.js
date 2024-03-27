@@ -5,7 +5,7 @@ import { Like } from "../models/like.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { User } from "../models/user.model.js";
+// import { User } from "../models/user.model.js";
 import { Tweet } from "../models/tweet.model.js";
 
 const getChannelStats = asyncHandler(async (req, res) => {
@@ -29,7 +29,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     },
   ])
 
-  if(!totalViews){
+  if (!totalViews) {
     throw new ApiError(404, "Something went wrong in totalViews")
   }
 
@@ -52,7 +52,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     },
   ])
 
-  if(!totalsubscribers){
+  if (!totalsubscribers) {
     throw new ApiError(404, "Something went wrong in totalsubscribers")
   }
   const totalVideos = await Video.aggregate([
@@ -74,8 +74,8 @@ const getChannelStats = asyncHandler(async (req, res) => {
       },
     },
   ])
-  
-  if(!totalVideos){
+
+  if (!totalVideos) {
     throw new ApiError(404, "Something went wrong in totalVideos")
   }
   const totalLikes = await Video.aggregate(
@@ -95,12 +95,12 @@ const getChannelStats = asyncHandler(async (req, res) => {
         }
       },
       {
-        $unwind: "videoLikes"
+        $unwind: "$videoLikes"
       },
       {
         $group: {
           _id: null,
-          likes: {$sum: 1}
+          likes: { $sum: 1 }
         }
       },
       {
@@ -111,7 +111,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     ]
   )
 
-  if(!totalLikes){
+  if (!totalLikes) {
     throw new ApiError(404, "Something went wrong in totalLikes")
   }
   const totalTweet = await Tweet.aggregate(
@@ -124,7 +124,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
       {
         $group: {
           _id: null,
-          tweets: {$sum: 1}
+          tweets: { $sum: 1 }
         }
       },
       {
@@ -135,11 +135,11 @@ const getChannelStats = asyncHandler(async (req, res) => {
     ]
   )
 
-  if(!totalTweet){
+  if (!totalTweet) {
     throw new ApiError(404, "Something went wrong in totalTweet")
   }
   res.status(200).json(
-    new ApiResponse(200, {totalLikes, totalVideos, totalsubscribers,totalTweet, totalViews}, "Successfully got the channel states")
+    new ApiResponse(200, { totalLikes, totalVideos, totalsubscribers, totalTweet, totalViews }, "Successfully got the channel states")
   )
 
 
@@ -155,9 +155,6 @@ const getChannelVideos = asyncHandler(async (req, res) => {
           isPublished: true,
         },
       },
-      {
-        $project: 1,
-      },
     ];
 
     const videoList = await Video.aggregate(aggregate);
@@ -170,7 +167,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, videoList, "Successfully got the videos"));
   } catch (error) {
-    throw new ApiError(400, "Something wrong in getting channel video");
+    throw new ApiError(400, error, "Something wrong in getting channel video");
   }
 
 });
