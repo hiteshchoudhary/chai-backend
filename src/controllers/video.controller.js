@@ -116,7 +116,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     return res
       .status(200)
-      .json(new ApiResponse(200, video, "Video fech Successfully"));
+      .json(new ApiResponse(200, video, "Video fetch Successfully"));
   } catch (error) {
     throw new ApiError(
       500,
@@ -128,16 +128,88 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const { title, description } = req.body
+  const { path: thumbnailPath } = req.file || {};
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const thumbnailResponse = await uploadOnCloudinary(thumbnailPath);
+
+  try {
+    const video = await Video.findByIdAndUpdate({ _id: videoId }, {
+      title,
+      description,
+      thumbnail: thumbnailPath && thumbnailResponse.url
+    }, {
+      new: true,
+    })
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, video, "Video updated Successfully"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong. Video not updated!!"
+    );
+  }
   //TODO: update video details like title, description, thumbnail
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  try {
+    const video = await Video.findByIdAndDelete({ _id: videoId })
+
+    if (!video) {
+      throw new ApiError(404, "Video not found")
+    }
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, video, "Video deleted Successfully"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong. Video not deleted!!"
+    );
+  }
+
   //TODO: delete video
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+
+  if (!isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const { isPublished } = await Video.findById({ _id: videoId }).lean()
+
+  try {
+    const video = await Video.findByIdAndUpdate({ _id: videoId }, {
+      isPublished: !isPublished
+    }, {
+      new: true,
+    })
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, video, "Video isPublished updated Successfully"));
+  } catch (error) {
+    throw new ApiError(
+      500,
+      error?.message || "Something went wrong. Video isPublished not updated!!"
+    );
+  }
 });
 
 export {
