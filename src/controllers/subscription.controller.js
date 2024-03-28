@@ -13,7 +13,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid video id");
     }
 
-    const channelData = await Subscription.findOneAndDelete({ subscriber: req.user._id, channel: channelId }).lean()
+    const channelData = await Subscription.findOne({ subscriber: req.user._id, channel: channelId }).lean()
 
     let data = null;
 
