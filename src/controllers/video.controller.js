@@ -1,34 +1,38 @@
-import mongoose, {isValidObjectId} from "mongoose"
-import {Video} from "../models/video.model.js"
-import {User} from "../models/user.model.js"
-import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
-import {asyncHandler} from "../utils/asyncHandler.js"
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import mongoose, { isValidObjectId } from "mongoose";
+import { Video } from "../models/video.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-
+// Get all videos with pagination, sorting, and filtering
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query
-    //TODO: get all videos based on query, sort, pagination
-    const filter = {
-        isPublished: true, 
-    };
+    const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query;
+
+    // Validate pagination inputs
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    if (pageNumber <= 0 || limitNumber <= 0) {
+        return res.status(400).json({ message: "Page and limit must be positive integers" });
+    }
+
+    // Build the filter object
+    const filter = { isPublished: true };
     if (query) {
         filter.$or = [
-            { title: { $regex: query, $options: "i" } }, 
-            { description: { $regex: query, $options: "i" } }, 
+            { title: { $regex: query, $options: "i" } },
+            { description: { $regex: query, $options: "i" } },
         ];
     }
     if (userId) {
         filter.owner = userId;
     }
+
+    // Determine sort order
     const sortOrder = sortType === "asc" ? 1 : -1;
 
     // Fetch videos with pagination, sorting, and filtering
     const videos = await Video.find(filter)
-        .sort({ [sortBy]: sortOrder }) // Sort by the specified field
-        .skip((page - 1) * limit) // Skip documents for pagination
-        .limit(parseInt(limit)); // Limit the number of documents
+        .sort({ [sortBy]: sortOrder })
+        .skip((pageNumber - 1) * limitNumber)
+        .limit(limitNumber);
 
     // Count total videos for the given filter
     const totalVideos = await Video.countDocuments(filter);
@@ -38,87 +42,122 @@ const getAllVideos = asyncHandler(async (req, res) => {
         videos,
         metadata: {
             totalVideos,
-            currentPage: parseInt(page),
-            totalPages: Math.ceil(totalVideos / limit),
+            currentPage: pageNumber,
+            totalPages: Math.ceil(totalVideos / limitNumber),
         },
     });
-})
+});
 
+// Publish a video
 const publishAVideo = asyncHandler(async (req, res) => {
-    const { title, description,videoFile,thumbnail} = req.body
-    // TODO: get video, upload to cloudinary, create video
-    const video = await Video.create({
-        title,
-        description,
-        videoFile,
-        thumbnail
-    })
-    res.status(200).json({
-        message: "video published ",
-        video: video
-    })
-})
+    const { title, description, videoFile, thumbnail } = req.body;
 
+    // Validate inputs
+    if (!title || !description || !videoFile || !thumbnail) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Create the video
+    const video = await Video.create({ title, description, videoFile, thumbnail });
+
+    res.status(201).json({
+        message: "Video published successfully",
+        video,
+    });
+});
+
+// Get a video by ID
 const getVideoById = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    //TODO: get video by id
-    const video = await Video.findOne({
-        _id: videoId
-    })
-    res.status(200).json({
-        message: "video found",
-        video : video
-    })
-})
+    const { videoId } = req.params;
 
+    // Validate videoId
+    if (!isValidObjectId(videoId)) {
+        return res.status(400).json({ message: "Invalid video ID" });
+    }
+
+    // Fetch the video
+    const video = await Video.findById(videoId);
+    if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+    }
+
+    res.status(200).json({
+        message: "Video retrieved successfully",
+        video,
+    });
+});
+
+// Update a video
 const updateVideo = asyncHandler(async (req, res) => {
-    const { videoId,newtitle,newdesc,newthumb } = req.params
-    //TODO: update video details like title, description, thumbnail
-    const video = await Video.updateOne({
-        _id: videoId
-    },{
-        title: newtitle ,
-        description: newdesc,
-        thumbnail: newthumb
-    })
+    const { videoId } = req.params;
+    const { title, description, thumbnail } = req.body;
+
+    // Validate videoId
+    if (!isValidObjectId(videoId)) {
+        return res.status(400).json({ message: "Invalid video ID" });
+    }
+
+    // Update the video
+    const video = await Video.findByIdAndUpdate(
+        videoId,
+        { title, description, thumbnail },
+        { new: true } // Return the updated document
+    );
+    if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+    }
+
     res.status(200).json({
-        message: "video updated",
-        video: video
-    })
+        message: "Video updated successfully",
+        video,
+    });
+});
 
-})
-
+// Delete a video
 const deleteVideo = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    //TODO: delete video
-    const video = await Video.deleteOne({
-        _id: videoId
-    })
-    res.status(200).json({
-        message: "video has been deleted",
-        video: video
-    })
-})
+    const { videoId } = req.params;
 
+    // Validate videoId
+    if (!isValidObjectId(videoId)) {
+        return res.status(400).json({ message: "Invalid video ID" });
+    }
+
+    // Delete the video
+    const video = await Video.findByIdAndDelete(videoId);
+    if (!video) {
+        return res.status(404).json({ message: "Video not found" });
+    }
+
+    res.status(200).json({
+        message: "Video deleted successfully",
+        video,
+    });
+});
+
+// Toggle publish status of a video
 const togglePublishStatus = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    const video =await Video.deleteOne({
-        _id: videoId
-    })
-    if(video){
-        await Video.deleteOne({
-            _id: videoId
-        })
-        res.status(200).json({
-            message: " video deleted "
-        })
+    const { videoId } = req.params;
+
+    // Validate videoId
+    if (!isValidObjectId(videoId)) {
+        return res.status(400).json({ message: "Invalid video ID" });
     }
-    else{
-      res.status(200).json({
-        message: "video does not exist to remove it so publish a video "
-      })
+
+    // Fetch the video
+    const video = await Video.findById(videoId);
+    if (!video) {
+        return res.status(404).json({ message: "Video not found" });
     }
-})
+
+    // Toggle the publish status
+    video.isPublished = !video.isPublished;
+    await video.save();
+
+    res.status(200).json({
+        message: `Video ${video.isPublished ? "published" : "unpublished"} successfully`,
+        video,
+    });
+});
 
 export {
     getAllVideos,
@@ -126,5 +165,5 @@ export {
     getVideoById,
     updateVideo,
     deleteVideo,
-    togglePublishStatus
-}
+    togglePublishStatus,
+};
