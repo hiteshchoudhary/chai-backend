@@ -294,6 +294,10 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
     }
 
     //TODO: delete old image - assignment
+    const oldAvatarUrl = req.user?.avatar;
+    const publicId = oldAvatarUrl
+        ?.split("/upload/")[1]   // get path after /upload/
+        ?.split(".")[0];        // remove file extension
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
 
@@ -312,6 +316,10 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         {new: true}
     ).select("-password")
 
+    if(publicId){
+        await deleteFromCloudinary(publicId);
+    }
+
     return res
     .status(200)
     .json(
@@ -327,6 +335,10 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     }
 
     //TODO: delete old image - assignment
+    const oldCoverImageUrl = req.user?.coverImage;
+    const publicId = oldCoverImageUrl
+        ?.split("/upload/")[1]   // get path after /upload/
+        ?.split(".")[0];        // remove file extension
 
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
@@ -345,6 +357,11 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         },
         {new: true}
     ).select("-password")
+
+    if(publicId){
+        await deleteFromCloudinary(publicId);
+    }
+
 
     return res
     .status(200)
