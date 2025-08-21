@@ -1,0 +1,1042 @@
+{
+	"info": {
+		"_postman_id": "4cd0fa06-ef52-450b-ad67-497eb169f9b8",
+		"name": "vidtube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36634440"
+	},
+	"item": [
+		{
+			"name": "healthcheck",
+			"item": [
+				{
+					"name": "healthcheck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/healthcheck/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"healthcheck",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "Dave D",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "dave3@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "dave0",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/WhatsApp Image 2025-01-26 at 20.38.18_db99aa7e.jpg"
+								},
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/sir.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/register",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"dave3@gmail.com\",\r\n    \"password\": \"123\"\t\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/login",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/refresh-token",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/logout",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"six@gmail.com\",\r\n    \"oldPassword\": \"six123\",\r\n    \"newPassword\": \"newsix123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/change-password",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current-user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/current-user",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"current-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/users/c/dave0",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"c",
+								"dave0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-account",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullname\": \"six the test\",\r\n    \"email\": \"six@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/update-account",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"update-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-avatar",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/Avatar/avatar1.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/avatar",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-cover-img",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/cover image/cover1.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/users/cover-image",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"cover-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/users/history",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"users",
+								"history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comment",
+			"item": [
+				{
+					"name": "add-comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Hey Dave Nice Video of hacker im Josh!!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/comments/67a792604276a6c96b92fb93",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"comments",
+								"67a792604276a6c96b92fb93"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-comment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/comments/67a792604276a6c96b92fb93",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"comments",
+								"67a792604276a6c96b92fb93"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-comment",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Updated .......... Test comment new at test video 7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/comments/c/67a4758b5acec15a473e658b",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"comments",
+								"c",
+								"67a4758b5acec15a473e658b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/comments/c/67a4758b5acec15a473e658b",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"comments",
+								"c",
+								"67a4758b5acec15a473e658b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "video",
+			"item": [
+				{
+					"name": "post-video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test Video 2 new - Hacker",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "hacker101.......... - 2",
+									"type": "text"
+								},
+								{
+									"key": "videoFile",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/hacker.mp4"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/cover image/cover1.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/videos/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/videos/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-video-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/videos/67a792604276a6c96b92fb93",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								"67a792604276a6c96b92fb93"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-video",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "/C:/Users/shant/Downloads/people.jpg"
+								},
+								{
+									"key": "description",
+									"value": "new desc.....2",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Test Video 3 new b2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{vidtube}}/videos/6797c93e03dc1709f5b1a9fa",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								"6797c93e03dc1709f5b1a9fa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-video",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/videos/6797c8b59f74ddcf0cc91772",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								"6797c8b59f74ddcf0cc91772"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle-publish-status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/videos/toggle/publish/6797ccebb409ba1a402a3686",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"videos",
+								"toggle",
+								"publish",
+								"6797ccebb409ba1a402a3686"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "playlist",
+			"item": [
+				{
+					"name": "create-playlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test playlist 2\",\r\n    \"description\": \"Neque porro quisquaasdasd......a dolor sit amet, consectetur\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/playlist/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-playlists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/playlist/user/679640c27fc37adcb0a85d8e",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"user",
+								"679640c27fc37adcb0a85d8e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-playlist-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/playlist/67a48a908b223936fcc3edf4",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"67a48a908b223936fcc3edf4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add-video-to-playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/playlist/add/67a48f75520f8cf89d733a0a/67a48a908b223936fcc3edf4",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"add",
+								"67a48f75520f8cf89d733a0a",
+								"67a48a908b223936fcc3edf4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove-video-from-playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/playlist/remove/67a48f75520f8cf89d733a0a/67a48a908b223936fcc3edf4",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"remove",
+								"67a48f75520f8cf89d733a0a",
+								"67a48a908b223936fcc3edf4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-playlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/playlist/67a48a1e8b223936fcc3edf1",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"67a48a1e8b223936fcc3edf1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test playlist 2 (updated)\",\r\n   \"description\": \" New Content: Neque porro quisquaasdasd......a dolor sit amet, consectetur??sit amet, consectetur!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/playlist/67a48a908b223936fcc3edf4",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"playlist",
+								"67a48a908b223936fcc3edf4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subscription",
+			"item": [
+				{
+					"name": "toggle-subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/subscriptions/c/679640c27fc37adcb0a85d8e",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"subscriptions",
+								"c",
+								"679640c27fc37adcb0a85d8e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-subscribed-channels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/subscriptions/c/679640c27fc37adcb0a85d8e",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"subscriptions",
+								"c",
+								"679640c27fc37adcb0a85d8e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-channel-subscribers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/subscriptions/u/679640c27fc37adcb0a85d8e",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"subscriptions",
+								"u",
+								"679640c27fc37adcb0a85d8e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tweet",
+			"item": [
+				{
+					"name": "create-tweet",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"Hey im dave and this is my 1st tweet!!...!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/tweets/",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"tweets",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-tweets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/tweets/user/67a6ed8b72ee6a018f9058f9",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"tweets",
+								"user",
+								"67a6ed8b72ee6a018f9058f9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-tweet",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \" patch: 2 - Updated...... tweet 1 ...... successfulyy!..\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{vidtube}}/tweets/67a5c53e8b16055874bfe30d",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"tweets",
+								"67a5c53e8b16055874bfe30d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-tweet",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/tweets/67a5c976bc23d0255acb2acb",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"tweets",
+								"67a5c976bc23d0255acb2acb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "like",
+			"item": [
+				{
+					"name": "toggle-video-like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/likes/toggle/v/67a792604276a6c96b92fb93",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"v",
+								"67a792604276a6c96b92fb93"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle-comment-like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/likes/toggle/c/67a89df757d9abbc93e3db5b",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"c",
+								"67a89df757d9abbc93e3db5b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "toggle-tweet-like",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/likes/toggle/t/67a89e3657d9abbc93e3db62",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"likes",
+								"toggle",
+								"t",
+								"67a89e3657d9abbc93e3db62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-liked-videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/likes/videos",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"likes",
+								"videos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "dashboard",
+			"item": [
+				{
+					"name": "get-channel-stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/dashboard/stats",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"dashboard",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-channel-videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{vidtube}}/dashboard/videos",
+							"host": [
+								"{{vidtube}}"
+							],
+							"path": [
+								"dashboard",
+								"videos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
