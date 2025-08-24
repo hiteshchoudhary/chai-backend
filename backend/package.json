@@ -1,0 +1,42 @@
+{
+  "name": "chai-backend",
+  "version": "1.0.0",
+  "description": "a backend at chai aur code channel - youtube",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "keywords": [
+    "javascript",
+    "backend",
+    "chai"
+  ],
+  "author": "Hitesh Choudhary",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mongoose-aggregate-paginate-v2": "^1.0.12",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.0.0",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
+    "cloudinary": "^1.41.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "get-video-duration": "^4.1.0",
+    "graphql": "^16.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
+    "mongoose-aggregate-paginate-v2": "^1.0.6",
+    "multer": "^1.4.5-lts.1",
+    "razorpay": "^2.9.6",
+    "socket.io": "^4.8.1",
+    "videojs-contrib-ads": "^7.5.2",
+    "videojs-ima": "^2.4.0"
+  }
+}
