@@ -23,5 +23,7 @@ const commentSchema = new Schema(
 
 
 commentSchema.plugin(mongooseAggregatePaginate)
-
+commentSchema.methods.validateUser = function (userId) {
+  return this.owner.toString() === userId.toString();
+};
 export const Comment = mongoose.model("Comment", commentSchema)
