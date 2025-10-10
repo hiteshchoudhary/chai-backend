@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import mongoose, {Schema} from "mongoose";
+=======
+import mongoose, { Schema } from "mongoose";
+>>>>>>> myrepo/main
 
 
 const likeSchema = new Schema({
@@ -18,7 +22,18 @@ const likeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+<<<<<<< HEAD
     
 }, {timestamps: true})
+=======
+
+
+},
+    { timestamps: true }
+
+
+)
+
+>>>>>>> myrepo/main
 
 export const Like = mongoose.model("Like", likeSchema)

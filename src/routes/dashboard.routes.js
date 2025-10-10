@@ -1,4 +1,5 @@
 import { Router } from 'express';
+<<<<<<< HEAD
 import {
     getChannelStats,
     getChannelVideos,
@@ -13,3 +14,13 @@ router.route("/stats").get(getChannelStats);
 router.route("/videos").get(getChannelVideos);
 
 export default router
+=======
+const router = Router();
+import { verifyJWT } from "../middlewares/auth.middleware.js"
+router.use(verifyJWT);
+
+
+
+// router.route("/stats").get(getChannelStats);
+// router.route("/videos").get(getChannelVideos);
+>>>>>>> myrepo/main

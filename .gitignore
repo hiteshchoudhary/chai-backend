@@ -117,5 +117,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+<<<<<<< HEAD
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 .DS_Store
+=======
+
+
+node_modules
+>>>>>>> myrepo/main
