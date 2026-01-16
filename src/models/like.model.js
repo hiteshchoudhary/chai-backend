@@ -2,23 +2,25 @@ import mongoose, {Schema} from "mongoose";
 
 
 const likeSchema = new Schema({
-    video: {
-        type: Schema.Types.ObjectId,
-        ref: "Video"
+    likedItem:{
+        type:Schema.Types.ObjectId,
+        required:true,
+        refPath:"likedItemModel"
     },
-    comment: {
-        type: Schema.Types.ObjectId,
-        ref: "Comment"
-    },
-    tweet: {
-        type: Schema.Types.ObjectId,
-        ref: "Tweet"
+    likedItemModel:{
+        type:String,
+        required:true,
+        enum:["Video","Tweet","Comment"]
     },
     likedBy: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required:true
     },
     
 }, {timestamps: true})
-
+likeSchema.index(
+    {likedItem:1,likedItemModel:1,likedBy:1},
+    {unique:true}
+)
 export const Like = mongoose.model("Like", likeSchema)
