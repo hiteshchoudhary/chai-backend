@@ -265,21 +265,33 @@ const getCurrentUser = asyncHandler(async(req, res) => {
 const updateAccountDetails = asyncHandler(async(req, res) => {
     const {fullName, email} = req.body
 
-    if (!fullName || !email) {
-        throw new ApiError(400, "All fields are required")
+    if (!fullName && !email) {
+        throw new ApiError(400, "Any One feild(email or fullName) is required.")
     }
+    //check for if new email that user is changing is present in another user's id.(duplicate email check) 
+    const existingemail = await User.findOne({email: email});
+    if(existingemail && existingemail._id.toString() !== req.user?._id.toString()){
+        throw new ApiError(409,"User with this email already exists.")
+    } 
 
-    const user = await User.findByIdAndUpdate(
+
+    if(email){
+        const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
-                fullName,
-                email: email
+                fullName:fullName||req.user.fullName,
+                email: email||req.user.email
             }
         },
-        {new: true}
+        {new: true,runValidators:true }
         
     ).select("-password")
+    if(!user){
+        throw new ApiError(400,"Not authorized to update the details.")
+    }
+    }
+    
 
     return res
     .status(200)

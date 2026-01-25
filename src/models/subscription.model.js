@@ -11,6 +11,7 @@ const subscriptionSchema = new Schema({
     }
 }, {timestamps: true})
 
-
+// enforce uniqueness per (subscriber, channel)..so that dupllicate subscription doesn't occur
+subscriptionSchema.index({ subscriber: 1, channel: 1 }, { unique: true })
 
 export const Subscription = mongoose.model("Subscription", subscriptionSchema)
