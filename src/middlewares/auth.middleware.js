@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js";
 
 export const verifyJWT = asyncHandler(async(req, _, next) => {
+    // WE ARE USING asyncHandler FOR CATCHING ERROR THEN WHY TRY CATCH AGAIN???
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
         
