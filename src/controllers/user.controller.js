@@ -33,7 +33,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // create user object - create entry in db
     // remove password and refresh token field from response
     // check for user creation
-    // return res
+    // return res 
 
 
     const {fullName, email, username, password } = req.body
@@ -111,7 +111,7 @@ const loginUser = asyncHandler(async (req, res) =>{
 
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")
-    }
+    }  
     
     // Here is an alternative of above code based on logic discussed in video:
     // if (!(username || email)) {
@@ -212,16 +212,16 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             secure: true
         }
     
-        const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
+        const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
     
         return res
         .status(200)
         .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200, 
-                {accessToken, refreshToken: newRefreshToken},
+                {accessToken, refreshToken},
                 "Access token refreshed"
             )
         )
@@ -263,11 +263,14 @@ const getCurrentUser = asyncHandler(async(req, res) => {
 })
 
 const updateAccountDetails = asyncHandler(async(req, res) => {
+    console.log("user routes loaded")
     const {fullName, email} = req.body
-
+    console.log("hloooo")
     if (!fullName || !email) {
+        console.log("skso")
         throw new ApiError(400, "All fields are required")
     }
+    
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
@@ -361,6 +364,8 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
         throw new ApiError(400, "username is missing")
     }
 
+    console.log("username =", username)
+
     const channel = await User.aggregate([
         {
             $match: {
@@ -425,6 +430,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
         new ApiResponse(200, channel[0], "User channel fetched successfully")
     )
 })
+
 
 const getWatchHistory = asyncHandler(async(req, res) => {
     const user = await User.aggregate([
