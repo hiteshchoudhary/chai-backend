@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { User} from "../models/user.model.js"
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import {uploadOnCloudinary, deleteFromCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
@@ -79,7 +79,7 @@ const registerUser = asyncHandler( async (req, res) => {
         fullName,
         avatar: avatar.url,
         coverImage: coverImage?.url || "",
-        email, 
+        email,
         password,
         username: username.toLowerCase()
     })
@@ -302,6 +302,9 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         
     }
 
+    const currentUser = await User.findById(req.user?._id)
+    await deleteFromCloudinary(currentUser.coverImage)
+
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -326,15 +329,14 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Cover image file is missing")
     }
 
-    //TODO: delete old image - assignment
-
-
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
+    
     if (!coverImage.url) {
-        throw new ApiError(400, "Error while uploading on avatar")
+        throw new ApiError(400, "Error while uploading on cover image")
         
     }
+    const currentUser = await User.findById(req.user?._id)
+    await deleteFromCloudinary(currentUser.coverImage)
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,

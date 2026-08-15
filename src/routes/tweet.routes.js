@@ -3,7 +3,7 @@ import {
     createTweet,
     deleteTweet,
     getUserTweets,
-    updateTweet,
+    updateTweet
 } from "../controllers/tweet.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 
